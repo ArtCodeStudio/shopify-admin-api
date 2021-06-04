@@ -1,13 +1,14 @@
 {
-    "extends": "@tsconfig/node16/tsconfig.json",
     "compilerOptions": {
+        "module": "es6",
+        "target": "es6",
         "noImplicitAny": false,
         "sourceMap": false,
         "forceConsistentCasingInFileNames": true,
         "preserveConstEnums": true,
         "moduleResolution": "Node",
         "allowSyntheticDefaultImports": true,
-        "outDir": "dist/cjs",
+        "outDir": "dist/esm",
         "declaration": true,
         "experimentalDecorators": true
     },
