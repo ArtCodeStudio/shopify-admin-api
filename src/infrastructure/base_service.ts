@@ -94,7 +94,7 @@ export class BaseService {
     const options = {
       headers: BaseService.buildDefaultHeaders(),
       method: method,
-      body: '',
+      body: undefined as string | undefined,
     };
 
     if (this.accessToken) {
