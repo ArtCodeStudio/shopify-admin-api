@@ -37,11 +37,11 @@ class ApiInfo {
   getCallLimits(): CallLimits {
     const limits = { ...this._callLimits };
     if (!limits.timestamp || !limits.current || !limits.max) {
-      throw new Error("Can't parse limits!");
+      console.warn("Can't parse limits: " + JSON.stringify(limits));
     }
-    const secondsPassed = (Date.now() - limits.timestamp) / 1000;
-    limits.current = Math.max(0, limits.current - 2 * secondsPassed);
-    limits.remaining = limits.max - limits.current;
+    const secondsPassed = (Date.now() - (limits.timestamp || 0)) / 1000;
+    limits.current = Math.max(0, (limits.current || 0) - 2 * secondsPassed);
+    limits.remaining = (limits.max || 0) - limits.current;
     return limits;
   }
 }
