@@ -7,10 +7,10 @@ import uri from 'jsuri';
 import PQueue from 'p-queue';
 
 export interface CallLimits {
-  timestamp: number | undefined;
-  remaining: number | undefined;
-  current: number | undefined;
-  max: number | undefined;
+  timestamp: number;
+  remaining: number;
+  current: number;
+  max: number;
 }
 
 class ApiInfo {
@@ -21,10 +21,10 @@ class ApiInfo {
     this.requestQueue = new PQueue({ concurrency: 30 });
   }
   private _callLimits: CallLimits = {
-    timestamp: undefined,
-    remaining: undefined,
-    current: undefined,
-    max: undefined,
+    timestamp: 0,
+    remaining: 0,
+    current: 0,
+    max: 0,
   };
   setCallLimits(val: string): CallLimits {
     const [current, max] = val.split('/').map((s) => parseInt(s));
@@ -36,12 +36,9 @@ class ApiInfo {
   }
   getCallLimits(): CallLimits {
     const limits = { ...this._callLimits };
-    if (!limits.timestamp || !limits.current || !limits.max) {
-      console.warn("Can't parse limits: " + JSON.stringify(limits));
-    }
-    const secondsPassed = (Date.now() - (limits.timestamp || 0)) / 1000;
-    limits.current = Math.max(0, (limits.current || 0) - 2 * secondsPassed);
-    limits.remaining = (limits.max || 0) - limits.current;
+    const secondsPassed = (Date.now() - limits.timestamp) / 1000;
+    limits.current = Math.max(0, limits.current - 2 * secondsPassed);
+    limits.remaining = limits.max - limits.current;
     return limits;
   }
 }
