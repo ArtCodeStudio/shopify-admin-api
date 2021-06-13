@@ -54,12 +54,12 @@ export interface Address extends ShopifyObject {
     /**
      * The latitude of the address.
      */
-    latitude?: string;
+    latitude?: number;
 
     /**
      * The longitude of the address.
      */
-    longitude?: string;
+    longitude?: number;
 
     /**
      * The name.
