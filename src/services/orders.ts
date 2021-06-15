@@ -1,6 +1,6 @@
 import * as Options from '../options';
 import { BaseService } from '../infrastructure';
-import { Order, OrderCreate,Transaction } from '../interfaces';
+import { MetaField, Order, OrderCreate, Transaction } from '../interfaces';
 
 export class Orders extends BaseService {
     constructor(shopDomain: string, accessToken: string) {
@@ -90,6 +90,15 @@ export class Orders extends BaseService {
      */
     public cancel(id: number, options?: Options.OrderCancelOptions) {
         return this.createRequest<Order>("POST", `${id}/cancel.json`, 'order', options);
+    }
+
+    /**
+     * Gets a list of up to 250 metafields from the given order.
+     * @param id The order's id.
+     * @param options Options for filtering the results.
+     */
+    public metafields(id: number, options?: Options.MetafieldListOptions) {
+        return this.createRequest<Partial<MetaField>[]>("GET", `${id}/metafields.json`, 'metafields', options);
     }
 }
 
