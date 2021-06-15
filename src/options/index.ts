@@ -10,6 +10,7 @@ export * from "./discounts";
 export * from "./gift_cards";
 export * from "./inventory_items";
 export * from "./inventory_levels";
+export * from "./metafields";
 export * from "./orders";
 export * from "./pages";
 export * from "./price_rule_discounts";
