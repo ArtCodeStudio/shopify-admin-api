@@ -28,6 +28,24 @@ const Shopify = require("shopify-admin-api");
 import * as Shopify from "shopify-admin-api";
 ```
 
+## Tests
+To run the tests on your locale machine you need a Shopify test shop in which you have created a private app, then you have to copy the credentials of the private app in the .env file in this project root directory.
+You can use the [.env-example](/.env-example) as a template:
+
+sh
+```
+cp .env-example .env
+editor-of-your-choice .env
+```
+
+Now the test can be started:
+
+sh
+```
+yarn run build
+yarn run test
+```
+
 ## Typescript declarations
 
 Using TypeScript? The TypeScript compiler will automatically pull in Shopify Admin API definitions for you when you install Shopify Admin API, **as long as you're using TypeScript 2+**. Interfaces and extra types are available under the `Interfaces`, `Enums` and `Options` exports from the main `"shopify-admin-api"` module.
@@ -112,7 +130,7 @@ import {Orders} from "shopify-admin-api";
 const orderService = new Orders(shopDomain, privateAppPassword)
 ```
 
-If you just need an access token for a private Shopify app, or for running the tests in this library, refer to the **Tests** section below.
+If you just need an access token for a private Shopify app, or for running the tests in this library, refer to the **Tests** section above.
 
 ## Authorization and authentication
 

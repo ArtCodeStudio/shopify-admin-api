@@ -64,30 +64,30 @@ export class OrderTests {
             ],
             financial_status: "paid",
             total_price: 5.00,
-            contact_email: "abc" + Date.now + "@example.com",
+            contact_email: "abc" + Date.now() + "@example.com",
             note: "Test note about the customer.",
         };
 
-        const obj = await this.service.create(createData, undefined, { send_receipt: false, send_fulfillment_receipt: false })
+        const order = await this.service.create(createData, undefined, { send_receipt: false, send_fulfillment_receipt: false })
 
         if (scheduleForDeletion) {
-            this.created.push(obj);
+            this.created.push(order);
         };
 
-        return obj;
+        return {
+            createData,
+            order,
+        }
     }
 
     @AsyncTest("should delete an order")
     @Timeout(5000)
     public async Test1() {
-        let error;
+        let error: Error | undefined;
 
         try {
-            const id = (await this.create())?.id;
+            const id = (await this.create()).order.id;
             Expect(id).toBeType("number");
-            if (!id) {
-                return;
-            }
 
             await this.service.delete(id);
         } catch (e) {
@@ -100,10 +100,14 @@ export class OrderTests {
     @AsyncTest("should create an order")
     @Timeout(5000)
     public async Test2() {
-        const order = await this.create();
+        const { order, createData } = (await this.create());
 
         Expect(order).toBeType("object");
-        Expect(order.contact_email).toBeType("string");
+        Expect(createData.contact_email).toBeType("string");
+        if (createData.contact_email) {
+            Expect(order.contact_email).toBeType(createData.contact_email);
+        }
+        
         Expect(order.id).toBeType("number")
         Expect(order.id).toBeGreaterThanOrEqualTo(1);
     }
@@ -111,7 +115,7 @@ export class OrderTests {
     @AsyncTest("should get an order")
     @Timeout(5000)
     public async Test3() {
-        const id = (await this.create())?.id;
+        const id = (await this.create()).order.id;
 
         Expect(id).toBeType("number");
 
@@ -126,7 +130,7 @@ export class OrderTests {
     @AsyncTest("should create an order with only one field")
     @Timeout(5000)
     public async Test4() {
-        const id = (await this.create())?.id;
+        const id = (await this.create()).order.id;
 
         Expect(id).toBeType("number");
 
@@ -173,7 +177,7 @@ export class OrderTests {
     @AsyncTest("should update an order")
     @Timeout(5000)
     public async Test7() {
-        const id = (await this.create())?.id;
+        const id = (await this.create()).order.id;
 
         Expect(id).toBeType("number");
 
@@ -188,7 +192,7 @@ export class OrderTests {
     @AsyncTest("should close an order")
     @Timeout(5000)
     public async Test8() {
-        const id = (await this.create())?.id;
+        const id = (await this.create()).order.id;
         Expect(id).toBeType("number");
         const order = await this.service.close(id);
 
@@ -200,7 +204,7 @@ export class OrderTests {
     @AsyncTest("should open an order")
     @Timeout(5000)
     public async Test9() {
-        const id = (await this.create())?.id;
+        const id = (await this.create()).order.id;
         Expect(id).toBeType("number");
 
         await this.service.close(id);
@@ -214,7 +218,7 @@ export class OrderTests {
     @AsyncTest("should cancel an order")
     @Timeout(5000)
     public async Test10() {
-        const id = (await this.create())?.id;
+        const id = (await this.create()).order.id;
         Expect(id).toBeType("number");
         const order = await this.service.cancel(id);
     
@@ -225,7 +229,7 @@ export class OrderTests {
     @AsyncTest("should cancel an order with options")
     @Timeout(5000)
     public async Test11() {
-        const id = (await this.create())?.id;
+        const id = (await this.create()).order.id;
         Expect(id).toBeType("number");
 
         const order = await this.service.cancel(id, {

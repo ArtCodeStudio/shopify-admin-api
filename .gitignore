@@ -32,13 +32,12 @@ node_modules
 # Optional REPL history
 .node_repl_history
 
-# Ignore built files
-built-tests
-built_tests
-dist/tests
-dist/
-bin/
+# Tests
 tests/dist/
+.env
+
+# Builds
+dist/
 
 # Ignore private configuration files
 *.private.json

@@ -105,7 +105,7 @@ export class IsValidShopifyDomainTests {
     }
 }
 
-// TODO test should work with other environment variables
+// TODO test should skipped or work with other test environment variables
 @TestFixture("Prime.Auth.isAuthenticProxyRequest tests")
 export class IsAuthenticProxyRequestTests {
     @AsyncTest("should return true for a valid request")
@@ -132,7 +132,7 @@ export class IsAuthenticProxyRequestTests {
     }
 }
 
-// TODO test should work with other environment variables
+// TODO test should skipped or work with other test environment variables
 @TestFixture("Prime.Auth.isAuthenticRequest tests")
 export class IsAuthenticRequestTests {
     @AsyncTest("should return true for a valid request")
@@ -162,7 +162,7 @@ export class IsAuthenticRequestTests {
     }
 }
 
-// TODO test should work with other environment variables
+// TODO test should skipped or work with other test environment variables
 @TestFixture("Prime.Auth.isAuthenticWebhook tests")
 export class IsAuthenticWebhookTests {
     private body = '{"order":{"id":123456}}';
