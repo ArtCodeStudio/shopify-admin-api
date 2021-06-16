@@ -32,16 +32,15 @@ import * as Shopify from "shopify-admin-api";
 To run the tests on your locale machine you need a Shopify test shop in which you have created a private app, then you have to copy the credentials of the private app in the .env file in this project root directory.
 You can use the [.env-example](/.env-example) as a template:
 
-sh
-```
+
+```sh
 cp .env-example .env
 editor-of-your-choice .env
 ```
 
 Now the test can be started:
 
-sh
-```
+```sh
 yarn run build
 yarn run test
 ```
