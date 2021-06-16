@@ -18,7 +18,7 @@ class ApiInfo {
   requestQueue: PQueue;
   constructor(accessToken: string) {
     this.accessToken = accessToken;
-    this.requestQueue = new PQueue({ concurrency: 30 });
+    this.requestQueue = new PQueue({ concurrency: 1 });
   }
   private _callLimits: CallLimits = {
     timestamp: 0,
