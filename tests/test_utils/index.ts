@@ -166,7 +166,7 @@ export class MatcherExtension extends Matcher<any> {
         }
 
         const values: any [] = this.actualValue;
-        let error: MatchError;
+        let error: MatchError | undefined;
 
         try {
             values.forEach(item => validator(item));

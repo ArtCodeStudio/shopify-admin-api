@@ -16,9 +16,9 @@ export class OrderTests {
 
     private priceRulesDiscountService = new Prime.PriceRuleDiscounts(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.InterfacesPriceRule[] = [];
+    private created: Prime.Interfaces.PriceRule[] = [];
 
-    private createdDiscounts: { [prId: number]: Prime.InterfacesPriceRuleDiscountCode[] } = {};
+    private createdDiscounts: { [prId: number]: Prime.Interfaces.PriceRuleDiscountCode[] } = {};
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -38,7 +38,7 @@ export class OrderTests {
         // Wait 3 seconds after all tests to let the API rate limit bucket empty.
         inspect("Waiting 3 seconds to let API rate limit empty.")
         
-        await new Promise(resolve => setTimeout(() => {
+        await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
         }, 3000));
@@ -85,8 +85,8 @@ export class OrderTests {
     @AsyncTest("should create a price rule")
     @Timeout(5000)
     public async Test1() {
-        let rule: Prime.InterfacesPriceRule;
-        let discount: Prime.InterfacesPriceRuleDiscountCode;
+        let rule: Prime.Interfaces.PriceRule;
+        let discount: Prime.Interfaces.PriceRuleDiscountCode;
 
         try {
             rule = await this.create();

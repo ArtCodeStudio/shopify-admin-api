@@ -1,12 +1,6 @@
-export interface Receipt {
-}
+import { PaymentDetails } from "../payment_details";
 
-export interface PaymentDetails {
-    credit_card_bin?: any;
-    avs_result_code?: any;
-    cvv_result_code?: any;
-    credit_card_number: string;
-    credit_card_company: string;
+export interface Receipt {
 }
 
 /**

@@ -1,0 +1,19 @@
+{
+    "extends": "@tsconfig/node16/tsconfig.json",
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "sourceMap": false,
+        "forceConsistentCasingInFileNames": true,
+        "preserveConstEnums": true,
+        "moduleResolution": "Node",
+        "allowSyntheticDefaultImports": true,
+        "outDir": "dist/cjs",
+        "declaration": false,
+        "experimentalDecorators": true,
+    },
+    "include": ["src/index.ts", "src"],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

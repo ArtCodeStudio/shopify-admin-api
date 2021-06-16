@@ -14,7 +14,7 @@ import { Config, Expect } from './test_utils';
 export class CustomerTests {
     private service = new Prime.Customers(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.InterfacesCustomer[] = [];
+    private created: Prime.Interfaces.Customer[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -25,7 +25,7 @@ export class CustomerTests {
         // Wait 3 seconds after all tests to let the API rate limit bucket empty.
         inspect("Waiting 3 seconds to let API rate limit empty.")
 
-        await new Promise(resolve => setTimeout(() => {
+        await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
         }, 3000));
@@ -45,18 +45,20 @@ export class CustomerTests {
         const list = await this.service.list();
 
         Expect(list).toBeAnArray();
-        Expect(list).itemsToPassValidator<Prime.InterfacesCustomer>(i => {
+        Expect(list).itemsToPassValidator<Prime.Interfaces.Customer>(i => {
             Expect(i).toBeType("object");
             Expect(i.id).toBeGreaterThan(0);
         })
     }
 
-    private async create(email, scheduleForDeletion = true) {
-        const obj = await this.service.create({
+    private async create(email: string, scheduleForDeletion = true) {
+        const createData: Partial<Prime.Models.Customer> = {
             email: email,
             first_name: "Test",
             last_name: "User"
-        });
+        }
+        const obj = await this.service.create(createData);
+
         if (scheduleForDeletion) {
             this.created.push(obj);
         }
@@ -90,9 +92,9 @@ export class CustomerTests {
         });
 
         Expect(updatedCustomer).toBeType("object");
-        Expect(updatedCustomer.email).toEqual(email);
-        Expect(updatedCustomer.first_name).toEqual(first_name);
-        Expect(updatedCustomer.last_name).toEqual(last_name);
+        Expect(updatedCustomer?.email).toEqual(email);
+        Expect(updatedCustomer?.first_name).toEqual(first_name);
+        Expect(updatedCustomer?.last_name).toEqual(last_name);
     }
 
     @AsyncTest("should delete a customer")

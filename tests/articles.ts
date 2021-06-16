@@ -14,13 +14,15 @@ import { Config, Expect } from './test_utils';
 export class ArticleTests {
     private service = new Prime.Articles(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.InterfacesArticle[] = [];
+    private created: Prime.Interfaces.Article[] = [];
 
-    private blogId: number;
+    private blogId: number = -1;
 
     @AsyncSetupFixture
     private async setupAsync() {
         const blogs = await new Prime.Blogs(Config.shopDomain, Config.accessToken).list();
+
+        Expect(blogs).toBeAnArray();
 
         this.blogId = blogs[0].id;
     }
@@ -34,14 +36,14 @@ export class ArticleTests {
         // Wait 3 seconds after all tests to let the API rate limit bucket empty.
         inspect("Waiting 3 seconds to let API rate limit empty.")
         
-        await new Promise(resolve => setTimeout(() => {
+        await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
         }, 3000));
     }
 
     private async create(scheduleForDeletion = true) {
-        const obj = await this.service.create(this.blogId, {
+        const createData: Partial<Prime.Interfaces.Article> = {
             title: "My article title - " + Date.now(),
             author: "John Smith",
             tags: "This Post, Has Been Tagged",
@@ -49,7 +51,8 @@ export class ArticleTests {
             image: {
                 attachment: "R0lGODlhAQABAIAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==\n"
             }
-        });
+        };
+        const obj = await this.service.create(this.blogId, createData);
 
         if (scheduleForDeletion) {
             this.created.push(obj);
@@ -67,13 +70,14 @@ export class ArticleTests {
         Expect(article.title).toContain("My article title - ");
         Expect(article.tags).toBeType("string");
         Expect(article.body_html).toEqual("<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>");
-        Expect(article.image.src).toBeType('string');
+        Expect(article.image?.src).toBeType('string');
     }
 
     @AsyncTest("should update an article")
     @Timeout(5000)
     public async UpdatesArticles() {
         const id = (await this.create()).id;
+        Expect(id).toBeType("number");
         const title = "My updated title";
         const article = await this.service.update(this.blogId, id, { title });
 
@@ -81,7 +85,7 @@ export class ArticleTests {
         Expect(article.title).toEqual(title);
         Expect(article.tags).toBeType("string");
         Expect(article.body_html).toEqual("<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>");
-        Expect(article.image.src).toBeType('string');
+        Expect(article.image?.src).toBeType('string');
     }
 
     @AsyncTest("should get an article")
@@ -94,7 +98,7 @@ export class ArticleTests {
         Expect(article.title).toContain("My article title - ");
         Expect(article.tags).toBeType("string");
         Expect(article.body_html).toEqual("<h1>I like articles</h1>\n<p><strong>Yea</strong>, I like posting them through <span class=\"caps\">REST</span>.</p>");
-        Expect(article.image.src).toBeType('string');
+        Expect(article.image?.src).toBeType('string');
     }
 
     @AsyncTest("should list articles")

@@ -15,7 +15,7 @@ import { createProducts, updateProducts } from './data';
 export class ProductTests {
     private service = new Prime.Products(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.InterfacesProduct[] = [];
+    private created: Prime.Interfaces.Product[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -26,7 +26,7 @@ export class ProductTests {
         // Wait 3 seconds after all tests to let the API rate limit bucket empty.
         inspect("Waiting 3 seconds to let API rate limit empty.")
         
-        await new Promise(resolve => setTimeout(() => {
+        await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
         }, 3000));
@@ -85,7 +85,7 @@ export class ProductTests {
         Expect(product.product_type).toEqual("Foobars");
         Expect(product.handle).toBeType("string");
         Expect(product.images).toBeAnArray();
-        Expect(product.images).itemsToPassValidator<Prime.InterfacesProductImage>(i => Expect(i.src).toBeType("string"));
+        Expect(product.images).itemsToPassValidator<Prime.Interfaces.ProductImage>(i => Expect(i.src).toBeType("string"));
     }
 
     @AsyncTest("should get a product")
@@ -101,7 +101,7 @@ export class ProductTests {
         Expect(product.product_type).toEqual("Foobars");
         Expect(product.handle).toBeType("string");
         Expect(product.images).toBeAnArray();
-        Expect(product.images).itemsToPassValidator<Prime.InterfacesProductImage>(i => Expect(i.src).toBeType("string"));
+        Expect(product.images).itemsToPassValidator<Prime.Interfaces.ProductImage>(i => Expect(i.src).toBeType("string"));
     }
 
     @AsyncTest("should get a product with only one field")
@@ -128,7 +128,7 @@ export class ProductTests {
         const list = await this.service.list();
 
         Expect(list).toBeAnArray();
-        Expect(list).itemsToPassValidator<Prime.InterfacesProduct>(product => {
+        Expect(list).itemsToPassValidator<Prime.Interfaces.Product>(product => {
             Expect(product.id).toBeGreaterThanOrEqualTo(1);
             Expect(product.title).toBeType("string");
             Expect(product.vendor).toBeType("string");
@@ -145,7 +145,7 @@ export class ProductTests {
         });
 
         Expect(list).toBeAnArray();
-        Expect(list).itemsToPassValidator<Prime.InterfacesProduct>(product => {
+        Expect(list).itemsToPassValidator<Prime.Interfaces.Product>(product => {
             Expect(product.id).toBeGreaterThanOrEqualTo(1);
             Expect(product.title).toBeType("string");
             Expect(product.vendor).toBeType("string");
@@ -159,7 +159,7 @@ export class ProductTests {
     public async Test8() {
         const created = await this.create();
         const newTitle = "Product Title Updated by Shopify Admin API";
-        const updated = await this.service.update(created.id, { ...created as Prime.InterfacesProductUpdateCreate, title: newTitle });
+        const updated = await this.service.update(created.id, { ...created as Prime.Interfaces.ProductUpdateCreate, title: newTitle });
         
         Expect(updated.id).toEqual(created.id);
         Expect(updated.title).toEqual(newTitle);

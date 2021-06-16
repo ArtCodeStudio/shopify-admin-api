@@ -14,7 +14,7 @@ import { Config, Expect } from './test_utils';
 export class SmartCollectionTests {
     private service = new Prime.SmartCollections(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.InterfacesSmartCollection[] = [];
+    private created: Prime.Interfaces.SmartCollection[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -25,7 +25,7 @@ export class SmartCollectionTests {
         // Wait 3 seconds after all tests to let the API rate limit bucket empty.
         inspect("Waiting 3 seconds to let API rate limit empty.")
         
-        await new Promise(resolve => setTimeout(() => {
+        await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
         }, 3000));
@@ -57,7 +57,7 @@ export class SmartCollectionTests {
         const list = await this.service.list();
         
         Expect(list).toBeAnArray();
-        Expect(list).itemsToPassValidator<Prime.InterfacesSmartCollection>(item => {
+        Expect(list).itemsToPassValidator<Prime.Interfaces.SmartCollection>(item => {
             Expect(item.id).toBeType("number");
             Expect(item.id).toBeGreaterThanOrEqualTo(1);
         })

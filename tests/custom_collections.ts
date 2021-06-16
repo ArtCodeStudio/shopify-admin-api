@@ -14,7 +14,7 @@ import { Config, Expect } from './test_utils';
 export class CustomCollectionTests {
     private service = new Prime.CustomCollections(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.InterfacesCustomCollection[] = [];
+    private created: Prime.Interfaces.CustomCollection[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -25,7 +25,7 @@ export class CustomCollectionTests {
         // Wait 3 seconds after all tests to let the API rate limit bucket empty.
         inspect("Waiting 3 seconds to let API rate limit empty.")
         
-        await new Promise(resolve => setTimeout(() => {
+        await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
         }, 3000));
@@ -41,7 +41,7 @@ export class CustomCollectionTests {
         // };
 
         // return obj;
-        return {} as Prime.InterfacesCustomCollection;
+        return {} as Prime.Interfaces.CustomCollection;
     }
 
     @AsyncTest("should count collections")
@@ -58,7 +58,7 @@ export class CustomCollectionTests {
         const list = await this.service.list();
         
         Expect(list).toBeAnArray();
-        Expect(list).itemsToPassValidator<Prime.InterfacesCustomCollection>(i => {
+        Expect(list).itemsToPassValidator<Prime.Interfaces.CustomCollection>(i => {
             Expect(i).toBeType("object");
             Expect(i.id).toBeGreaterThan(0);
         })

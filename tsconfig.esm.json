@@ -1,20 +1,8 @@
 {
+    "extends": "./tsconfig.cjs.json",
     "compilerOptions": {
         "module": "es6",
         "target": "es6",
-        "noImplicitAny": false,
-        "sourceMap": false,
-        "forceConsistentCasingInFileNames": true,
-        "preserveConstEnums": true,
-        "moduleResolution": "Node",
-        "allowSyntheticDefaultImports": true,
         "outDir": "dist/esm",
-        "declaration": true,
-        "experimentalDecorators": true
-    },
-    "include": ["src/index.ts", "src"],
-    "exclude": [
-        "node_modules",
-        "dist"
-    ]
+    }
 }

@@ -14,7 +14,7 @@ import { Config, createGuid, Expect } from './test_utils';
 export class WebhookTests {
     private service = new Prime.Webhooks(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.InterfacesWebhook[] = [];
+    private created: Prime.Interfaces.Webhook[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -25,7 +25,7 @@ export class WebhookTests {
         // Wait 3 seconds after all tests to let the API rate limit bucket empty.
         inspect("Waiting 3 seconds to let API rate limit empty.")
         
-        await new Promise(resolve => setTimeout(() => {
+        await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
         }, 3000));

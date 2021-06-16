@@ -14,7 +14,7 @@ import { Config, Expect } from './test_utils';
 export class BlogTests {
     private service = new Prime.Blogs(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.InterfacesBlog[] = [];
+    private created: Prime.Interfaces.Blog[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -25,7 +25,7 @@ export class BlogTests {
         // Wait 3 seconds after all tests to let the API rate limit bucket empty.
         inspect("Waiting 3 seconds to let API rate limit empty.")
         
-        await new Promise(resolve => setTimeout(() => {
+        await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
         }, 3000));
@@ -57,7 +57,8 @@ export class BlogTests {
     @AsyncTest("should get a blog")
     @Timeout(5000)
     public async Test2() {
-        const id = (await this.create()).id;
+        const id = (await this.create())?.id;
+        Expect(id).toBeType("number");
         const blog = await this.service.get(id);
 
         Expect(blog).toBeType("object");
@@ -69,7 +70,8 @@ export class BlogTests {
     @Timeout(5000)
     public async Test3() {
         const title = "My Updated Title";
-        const id = (await this.create()).id;
+        const id = (await this.create())?.id;
+        Expect(id).toBeType("number");
         const blog = await this.service.update(id, {title});
 
         Expect(blog).toBeType("object");

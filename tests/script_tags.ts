@@ -14,7 +14,7 @@ import { Config, Expect } from './test_utils';
 export class ScriptTagTests {
     private service = new Prime.ScriptTags(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.InterfacesScriptTag[] = [];
+    private created: Prime.Interfaces.ScriptTag[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -25,7 +25,7 @@ export class ScriptTagTests {
         // Wait 3 seconds after all tests to let the API rate limit bucket empty.
         inspect("Waiting 3 seconds to let API rate limit empty.")
         
-        await new Promise(resolve => setTimeout(() => {
+        await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
         }, 3000));
@@ -117,7 +117,7 @@ export class ScriptTagTests {
         const list = await this.service.list();
 
         Expect(list.length).toBeGreaterThanOrEqualTo(1);
-        Expect(list).itemsToPassValidator<Prime.InterfacesScriptTag>(tag => {
+        Expect(list).itemsToPassValidator<Prime.Interfaces.ScriptTag>(tag => {
             Expect(tag.id).toBeType("number");
             Expect(tag.src).toBeType("string");
             Expect(tag.created_at).toBeType("string");

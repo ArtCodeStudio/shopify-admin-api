@@ -1,6 +1,6 @@
-import { ProductUpdateCreate } from '../../../interfaces';
+import * as Prime from '../../..';
 
 export interface IProductTestData {
   info: string;
-  product: ProductUpdateCreate;
+  product: Prime.Interfaces.ProductUpdateCreate;
 }

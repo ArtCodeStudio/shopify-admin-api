@@ -14,7 +14,7 @@ import { Config, createGuid, Expect } from './test_utils';
 export class RedirectTests {
     private service = new Prime.Redirects(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.InterfacesRedirect[] = [];
+    private created: Prime.Interfaces.Redirect[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -25,7 +25,7 @@ export class RedirectTests {
         // Wait 3 seconds after all tests to let the API rate limit bucket empty.
         inspect("Waiting 3 seconds to let API rate limit empty.")
         
-        await new Promise(resolve => setTimeout(() => {
+        await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
         }, 3000));

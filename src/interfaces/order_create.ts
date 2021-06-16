@@ -72,7 +72,7 @@ export interface OrderCreate {
     /**
      * The fulfillment status for this order. Known values are 'fulfilled', 'partial' or null.
      */
-    fulfillment_status: FulfillmentStatus;
+    fulfillment_status?: FulfillmentStatus;
 
     /**
      * An array of <see cref="ShopifyLineItem"/> objects, each one containing information about an item in the order.

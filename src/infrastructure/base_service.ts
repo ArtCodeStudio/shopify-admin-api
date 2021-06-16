@@ -83,13 +83,16 @@ export class BaseService {
     return joinPaths(...paths).replace(/\/\.json/gi, '.json');
   }
 
+  protected async createRequest<T>(method: 'DELETE', path: string, rootElement?: string, payload?: any): Promise<undefined>;
+  protected async createRequest<T>(method: 'GET' | 'POST' | 'PUT', path: string, rootElement?: string, payload?: any): Promise<T>;
+
   protected async createRequest<T>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     path: string,
     rootElement?: string,
     payload?: any,
   ) {
-    method = method.toUpperCase() as any;
+    method = method.toUpperCase() as 'GET' | 'POST' | 'PUT' | 'DELETE';
 
     const options = {
       headers: BaseService.buildDefaultHeaders(),
@@ -152,7 +155,7 @@ export class BaseService {
     }
 
     // Shopify implement 204 - no content for DELETE requests
-    if (result.status == 204) {
+    if (method === 'DELETE' && result.status == 204) {
       return;
     }
 
