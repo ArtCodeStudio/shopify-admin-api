@@ -1,0 +1,37 @@
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Install
+      run: yarn install
+    - name: Build
+      run: yarn run build
+    - name: Test
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        SHOP_DOMAIN: ${{ secrets.SHOP_DOMAIN }}
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      run: yarn test
+
