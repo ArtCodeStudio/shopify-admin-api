@@ -1,4 +1,4 @@
-import * as Prime from '../';
+import * as Prime from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -10,30 +10,29 @@ import {
     } from 'alsatian';
 import { Config, Expect } from './test_utils';
 
-@TestFixture("GiftCard Tests")
-export class GiftCardTests {
-    @AsyncTest("should create a Gift Card")    
+@TestFixture("Discount Tests")
+export class DiscountTests {
+    @AsyncTest("should create a Discount")
     @IgnoreTest("cannot be tested without a Shopify Plus account.")
     public async Test1() { }
 
-    @AsyncTest("should get a Gift Card")
+    @AsyncTest("should get a Discount")
     @IgnoreTest("cannot be tested without a Shopify Plus account.")
     public async Test2() { }
 
-    @AsyncTest("should search for a Gift")
-    @IgnoreTest("cannot be tested without a Shopify Plus account.")
+    @AsyncTest("should list Discounts,")
+    @IgnoreTest("annot be tested without a Shopify Plus account.")
     public async Test3() { }
 
-    @AsyncTest("should count Gift Cards,")
-    @IgnoreTest("annot be tested without a Shopify Plus account.")
+    @AsyncTest("should delete a Discount")
+    @IgnoreTest("cannot be tested without a Shopify Plus account.")
     public async Test4() { }
 
-    @AsyncTest("should list Gift Cards,")
-    @IgnoreTest("annot be tested without a Shopify Plus account.")
+    @AsyncTest("should enable a Discount")
+    @IgnoreTest("cannot be tested without a Shopify Plus account.")
     public async Test5() { }
 
-    @AsyncTest("should delete a Gift Card")
+    @AsyncTest("should disable a Discount")
     @IgnoreTest("cannot be tested without a Shopify Plus account.")
     public async Test6() { }
-
 }

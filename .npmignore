@@ -1,6 +1,5 @@
+src/
 tests/
-./tests/
-./tests
-./tests/**/*
-test2/
-./test2/
+.tasks/
+.vscode/
+.yarn/

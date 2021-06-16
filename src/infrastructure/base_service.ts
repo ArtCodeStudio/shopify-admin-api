@@ -53,7 +53,7 @@ export class BaseService {
   ) {
     //Ensure resource starts with admin/
     if (!/^[\/]?admin\//gi.test(resource)) {
-      this.resource = 'admin/api/2020-04/' + resource;
+      this.resource = 'admin/api/2021-04/' + resource;
     }
     if (
       !BaseService.apiInfo[shopDomain] ||

@@ -1,4 +1,4 @@
-import * as Prime from '../';
+import * as Prime from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,

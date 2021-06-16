@@ -1,4 +1,4 @@
-import * as Prime from '../';
+import * as Prime from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -64,7 +64,7 @@ export class OrderTests {
             ],
             financial_status: "paid",
             total_price: 5.00,
-            email: Date.now + "@example.com",
+            contact_email: "abc" + Date.now + "@example.com",
             note: "Test note about the customer.",
         };
 

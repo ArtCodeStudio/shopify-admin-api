@@ -38,14 +38,12 @@ built_tests
 dist/tests
 dist/
 bin/
-tests/built/
+tests/dist/
 
 # Ignore private configuration files
 *.private.json
 .vscode
 
-# Ignore test project's yarn.lock
-tests/yarn.lock
 
 # Yarn 2 https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored
 .yarn/*

@@ -1,4 +1,4 @@
-import * as Prime from '../';
+import * as Prime from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -10,11 +10,11 @@ import {
     } from 'alsatian';
 import { Config, Expect } from './test_utils';
 
-@TestFixture("CustomCollection Tests")
-export class CustomCollectionTests {
-    private service = new Prime.CustomCollections(Config.shopDomain, Config.accessToken);
+@TestFixture("SmartCollection Tests") 
+export class SmartCollectionTests {
+    private service = new Prime.SmartCollections(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.CustomCollection[] = [];
+    private created: Prime.Interfaces.SmartCollection[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -32,16 +32,15 @@ export class CustomCollectionTests {
     }
 
     private async create(scheduleForDeletion = true) {
-        // const obj = await this.service.create({
-        //     title: "Shopify Admin API Test Collection - " + Date.now(), 
-        // });
+        const obj = await this.service.create({
+            
+        });
 
-        // if (scheduleForDeletion) {
-        //     this.created.push(obj);
-        // };
+        if (scheduleForDeletion) {
+            this.created.push(obj);
+        };
 
-        // return obj;
-        return {} as Prime.Interfaces.CustomCollection;
+        return obj;
     }
 
     @AsyncTest("should count collections")
@@ -49,7 +48,7 @@ export class CustomCollectionTests {
     public async Test1() {
         const count = await this.service.count();
         
-        Expect(count).toBeGreaterThan(0);
+        Expect(count).toBeGreaterThanOrEqualTo(1);
     }
 
     @AsyncTest("should list collections")
@@ -58,9 +57,9 @@ export class CustomCollectionTests {
         const list = await this.service.list();
         
         Expect(list).toBeAnArray();
-        Expect(list).itemsToPassValidator<Prime.Interfaces.CustomCollection>(i => {
-            Expect(i).toBeType("object");
-            Expect(i.id).toBeGreaterThan(0);
+        Expect(list).itemsToPassValidator<Prime.Interfaces.SmartCollection>(item => {
+            Expect(item.id).toBeType("number");
+            Expect(item.id).toBeGreaterThanOrEqualTo(1);
         })
     }
 }

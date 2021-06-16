@@ -6,10 +6,10 @@ const env: { [prop: string]: string } = process.env;
 
 // Grab secret keys
 export const Config = {
-    apiKey: env["shopify_prime_apiKey"] || env["apiKey"],
-    secretKey: env["shopify_prime_secretKey"] || env["secretKey"],
-    shopDomain: env["shopify_prime_shopDomain"] || env["shopDomain"],
-    accessToken: env["shopify_prime_accessToken"] || env["accessToken"],
+    apiKey: env["API_KEY"] || env["GITHUB_API_KEY"],
+    secretKey: env["SECRET_KEY"] || env["GITHUB_SECRET_KEY"],
+    shopDomain: env["SHOP_DOMAIN"] || env["GITHUB_SHOP_DOMAIN"],
+    accessToken: env["ACCESS_TOKEN"] || env["GITHUB_ACCESS_TOKEN"],
 }
 
 

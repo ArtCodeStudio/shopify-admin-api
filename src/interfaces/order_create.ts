@@ -44,7 +44,7 @@ export interface OrderCreate {
     /**
      * A <see cref="ShopifyCustomer"/> object containing information about the customer. This value may be null if the order was created through Shopify POS.
      */
-    customer?: Customer;
+    customer?: Partial<Customer>; // TODO
 
     /**
      * Applicable discount codes that can be applied to the order.

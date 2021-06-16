@@ -1,4 +1,4 @@
-import * as Prime from '../';
+import * as Prime from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -105,15 +105,17 @@ export class IsValidShopifyDomainTests {
     }
 }
 
+// TODO test should work with other environment variables
 @TestFixture("Prime.Auth.isAuthenticProxyRequest tests")
 export class IsAuthenticProxyRequestTests {
     @AsyncTest("should return true for a valid request")
     @Timeout(10000)
     public async Test1() {
+        const shop = Config.shopDomain.replace("https://", "");
         const qs = {
-            shop: "stages-test-shop-2.myshopify.com",
+            shop,
             timestamp: "1464592588",
-            signature: "e5d8a117dbbe3fd262f25c5ab3ff5c8eacd363b487b5fd2372425d2b6a4dce6b",
+            signature: "368BD20FA50494E71D3A44DD24D7AF29C1F404C1E6CDA381E7AE263C185199BE",
             path_prefix: "/apps/stages-tracking-widget-1",
         }
         const result = await Prime.Auth.isAuthenticProxyRequest(qs, Config.secretKey);
@@ -130,16 +132,18 @@ export class IsAuthenticProxyRequestTests {
     }
 }
 
+// TODO test should work with other environment variables
 @TestFixture("Prime.Auth.isAuthenticRequest tests")
 export class IsAuthenticRequestTests {
     @AsyncTest("should return true for a valid request")
     @Timeout(10000)
     public async Test1() {
+        const shop = Config.shopDomain.replace("https://", "");
         const qs = {
             signature: "1f013145b16c437fa695f7f448ca79ce",
-            shop: "stages-test-shop-2.myshopify.com",
+            shop,
             timestamp: "1464593148",
-            hmac: "ea89e21116cc3ca8cf8f484f6d7a151f08af5b8c544c42c310c4bd06511247ca",
+            hmac: "8E6637D03C24AB5C350626E34833FE52D349111C772B2E941C68BB2F62EAABAB",
         }
         const result = await Prime.Auth.isAuthenticRequest(qs, Config.secretKey);
 
@@ -158,10 +162,11 @@ export class IsAuthenticRequestTests {
     }
 }
 
+// TODO test should work with other environment variables
 @TestFixture("Prime.Auth.isAuthenticWebhook tests")
 export class IsAuthenticWebhookTests {
     private body = '{"order":{"id":123456}}';
-    private header = "EXRIrLEalEssMKrvONz+5mrVF3LmAqkhrquCaBV+vjo=";
+    private header = "QMXJBUSXH65TNBFUTCKYOL5MKPHPMI/UL4MLTSKNEYC=";
 
     @AsyncTest("should return true for a valid request with a header string")
     @Timeout(10000)

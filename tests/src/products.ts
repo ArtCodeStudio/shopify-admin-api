@@ -1,4 +1,4 @@
-import * as Prime from '../';
+import * as Prime from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -168,7 +168,6 @@ export class ProductTests {
     @AsyncTest("should create all products from test data")
     @Timeout(5000)
     public async Test9() {
-        console.debug('test 9');
         for (const createProduct of createProducts) {
             let error;
             try {

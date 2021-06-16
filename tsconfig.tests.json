@@ -1,7 +1,7 @@
 {
     "extends": "./tsconfig.cjs.json",
     "compilerOptions": {
-        "outDir": "dist/tests",
+        "outDir": "tests/dist",
     },
-    "include": ["tests"],
+    "include": ["tests/src"],
 }
