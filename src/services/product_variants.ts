@@ -1,5 +1,5 @@
 import * as Options from '../options';
-import { ProductVariant, ProductVariantCreate, ProductVariantUpdate } from '../interfaces';
+import { ProductVariant, ProductVariantCreate, ProductVariantUpdate, MetaField, MetaFieldUpdateCreate } from '../interfaces';
 import { BaseService } from '../infrastructure';
 
 /**

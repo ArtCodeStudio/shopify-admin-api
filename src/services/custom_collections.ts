@@ -1,6 +1,6 @@
 import * as Options from '../options';
 import { BaseService } from '../infrastructure';
-import { CustomCollection } from '../interfaces';
+import { CustomCollection, MetaField, MetaFieldUpdateCreate } from '../interfaces';
 
 export class CustomCollections extends BaseService {
     constructor(shopDomain: string, accessToken: string) {
@@ -57,6 +57,61 @@ export class CustomCollections extends BaseService {
      */
     public delete(id: number) {
         return this.createRequest<void>("DELETE", `${id}.json`);
+    }
+
+    /**
+     * Gets a list of up to 250 metafields from the given customCollection.
+     * @param id The customCollection's id.
+     * @param options Options for filtering the results.
+     */
+    public listMetafields(customCollectionId: number, options?: Options.MetafieldListOptions) {
+        return this.createRequest<Partial<MetaField>[]>("GET", `${customCollectionId}/metafields.json`, 'metafields', options);
+    }
+
+    /**
+     * Returns the number of metafields belonging to the given customCollection.
+     * @param id The customCollection's id.
+     */
+     public countMetafields(customCollectionId: number) {
+        return this.createRequest<number>("GET", `${customCollectionId}/metafields/count.json`, 'count');
+    }
+
+    /**
+     * Gets the metafield with the given id from an customCollection.
+     * @param customCollectionId The customCollection's id.
+     * @param id The metafield's id.
+     */
+    public getMetafield(customCollectionId: number, id: number) {
+        return this.createRequest<Partial<MetaField>>("GET", `${customCollectionId}/metafields/${id}.json`, 'metafield');
+    }
+
+    /**
+     * Creates a metafield for the given customCollection.
+     * @param customCollectionId The customCollection's id.
+     * @param id The metafield's id.
+     * @param metafield Options for the metafield
+     */
+     public createMetafield(customCollectionId: number, metafield: Partial<MetaFieldUpdateCreate>) {
+        return this.createRequest<Partial<MetaField>>("POST", `${customCollectionId}/metafields.json`, 'metafield', { metafield });
+    }
+
+    /**
+     * Updates a metafield for the given customCollection
+     * @param customCollectionId The customCollection's id.
+     * @param id The metafield's id.
+     * @param metafield Options for the metafield
+     */
+     public updateMetafield(customCollectionId: number, id: number, metafield?: Partial<MetaFieldUpdateCreate>) {
+        return this.createRequest<Partial<MetaField>>("PUT", `${customCollectionId}/metafields/${id}.json`, 'metafield', { metafield });
+    }
+
+    /**
+     * Deletes the metafield with the given id from an customCollection.
+     * @param customCollectionId The customCollection's id.
+     * @param id The metafield's id.
+     */
+     public deleteMetafield(customCollectionId: number, id: number) {
+        return this.createRequest<undefined>("DELETE", `${customCollectionId}/metafields/${id}.json`, 'metafield');
     }
 }
 

@@ -1,6 +1,6 @@
 import * as Options from '../options';
 import { BaseService } from '../infrastructure';
-import {Customer, CustomerInvite} from '../interfaces';
+import {Customer, CustomerInvite, MetaField, MetaFieldUpdateCreate } from '../interfaces';
 
 export class Customers extends BaseService {
     constructor(shopDomain: string, accessToken: string) {
@@ -79,6 +79,61 @@ export class Customers extends BaseService {
      */
     public invite(invite?: CustomerInvite) {
         return this.createRequest<CustomerInvite>("POST", "send_invite.json", "customer_invite", { customer_invite: invite })
+    }
+
+    /**
+     * Gets a list of up to 250 metafields from the given customer.
+     * @param id The customer's id.
+     * @param options Options for filtering the results.
+     */
+     public listMetafields(customerId: number, options?: Options.MetafieldListOptions) {
+        return this.createRequest<Partial<MetaField>[]>("GET", `${customerId}/metafields.json`, 'metafields', options);
+    }
+
+    /**
+     * Returns the number of metafields belonging to the given customer.
+     * @param id The customer's id.
+     */
+     public countMetafields(customerId: number) {
+        return this.createRequest<number>("GET", `${customerId}/metafields/count.json`, 'count');
+    }
+
+    /**
+     * Gets the metafield with the given id from an customer.
+     * @param customerId The customer's id.
+     * @param id The metafield's id.
+     */
+    public getMetafield(customerId: number, id: number) {
+        return this.createRequest<Partial<MetaField>>("GET", `${customerId}/metafields/${id}.json`, 'metafield');
+    }
+
+    /**
+     * Creates a metafield for the given customer.
+     * @param customerId The customer's id.
+     * @param id The metafield's id.
+     * @param metafield Options for the metafield
+     */
+     public createMetafield(customerId: number, metafield: Partial<MetaFieldUpdateCreate>) {
+        return this.createRequest<Partial<MetaField>>("POST", `${customerId}/metafields.json`, 'metafield', { metafield });
+    }
+
+    /**
+     * Updates a metafield for the given customer
+     * @param customerId The customer's id.
+     * @param id The metafield's id.
+     * @param metafield Options for the metafield
+     */
+     public updateMetafield(customerId: number, id: number, metafield?: Partial<MetaFieldUpdateCreate>) {
+        return this.createRequest<Partial<MetaField>>("PUT", `${customerId}/metafields/${id}.json`, 'metafield', { metafield });
+    }
+
+    /**
+     * Deletes the metafield with the given id from an customer.
+     * @param customerId The customer's id.
+     * @param id The metafield's id.
+     */
+     public deleteMetafield(customerId: number, id: number) {
+        return this.createRequest<undefined>("DELETE", `${customerId}/metafields/${id}.json`, 'metafield');
     }
 }
 

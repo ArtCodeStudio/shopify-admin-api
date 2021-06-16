@@ -1,5 +1,5 @@
 import * as Options from '../options';
-import { Article } from '../interfaces';
+import { Article, MetaField, MetaFieldUpdateCreate } from '../interfaces';
 import { BaseService } from '../infrastructure';
 
 /**

@@ -1,6 +1,6 @@
 import * as Options from '../options';
 import { BaseService } from '../infrastructure';
-import { MetaField, Order, OrderCreate, Transaction } from '../interfaces';
+import { MetaField, MetaFieldUpdateCreate, Order, OrderCreate, Transaction } from '../interfaces';
 
 export class Orders extends BaseService {
     constructor(shopDomain: string, accessToken: string) {
@@ -97,8 +97,54 @@ export class Orders extends BaseService {
      * @param id The order's id.
      * @param options Options for filtering the results.
      */
-    public metafields(id: number, options?: Options.MetafieldListOptions) {
-        return this.createRequest<Partial<MetaField>[]>("GET", `${id}/metafields.json`, 'metafields', options);
+    public listMetafields(orderId: number, options?: Options.MetafieldListOptions) {
+        return this.createRequest<Partial<MetaField>[]>("GET", `${orderId}/metafields.json`, 'metafields', options);
+    }
+
+    /**
+     * Returns the number of metafields belonging to the given order.
+     * @param id The order's id.
+     */
+     public countMetafields(orderId: number) {
+        return this.createRequest<number>("GET", `${orderId}/metafields/count.json`, 'count');
+    }
+
+    /**
+     * Gets the metafield with the given id from an order.
+     * @param orderId The order's id.
+     * @param id The metafield's id.
+     */
+    public getMetafield(orderId: number, id: number) {
+        return this.createRequest<Partial<MetaField>>("GET", `${orderId}/metafields/${id}.json`, 'metafield');
+    }
+
+    /**
+     * Creates a metafield for the given order.
+     * @param orderId The order's id.
+     * @param id The metafield's id.
+     * @param metafield Options for the metafield
+     */
+     public createMetafield(orderId: number, metafield: Partial<MetaFieldUpdateCreate>) {
+        return this.createRequest<Partial<MetaField>>("POST", `${orderId}/metafields.json`, 'metafield', { metafield });
+    }
+
+    /**
+     * Updates a metafield for the given order
+     * @param orderId The order's id.
+     * @param id The metafield's id.
+     * @param metafield Options for the metafield
+     */
+     public updateMetafield(orderId: number, id: number, metafield?: Partial<MetaFieldUpdateCreate>) {
+        return this.createRequest<Partial<MetaField>>("PUT", `${orderId}/metafields/${id}.json`, 'metafield', { metafield });
+    }
+
+    /**
+     * Deletes the metafield with the given id from an order.
+     * @param orderId The order's id.
+     * @param id The metafield's id.
+     */
+     public deleteMetafield(orderId: number, id: number) {
+        return this.createRequest<undefined>("DELETE", `${orderId}/metafields/${id}.json`, 'metafield');
     }
 }
 

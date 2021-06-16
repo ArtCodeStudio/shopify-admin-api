@@ -1,6 +1,6 @@
 import * as Options from '../options';
 import { BaseService } from '../infrastructure';
-import { Blog } from '../interfaces';
+import { Blog, MetaField, MetaFieldUpdateCreate } from '../interfaces';
 
 /**
  * A service for manipulating a Shopify shop's blogs. For manipulating a blog's posts, use the Articles class instead.
@@ -57,6 +57,61 @@ export class Blogs extends BaseService {
      */
     public delete(id: number) {
         return this.createRequest<void>("DELETE", `${id}.json`);
+    }
+
+    /**
+     * Gets a list of up to 250 metafields from the given blog.
+     * @param id The blog's id.
+     * @param options Options for filtering the results.
+     */
+     public listMetafields(blogId: number, options?: Options.MetafieldListOptions) {
+        return this.createRequest<Partial<MetaField>[]>("GET", `${blogId}/metafields.json`, 'metafields', options);
+    }
+
+    /**
+     * Returns the number of metafields belonging to the given blog.
+     * @param id The blog's id.
+     */
+     public countMetafields(blogId: number) {
+        return this.createRequest<number>("GET", `${blogId}/metafields/count.json`, 'count');
+    }
+
+    /**
+     * Gets the metafield with the given id from an blog.
+     * @param blogId The blog's id.
+     * @param id The metafield's id.
+     */
+    public getMetafield(blogId: number, id: number) {
+        return this.createRequest<Partial<MetaField>>("GET", `${blogId}/metafields/${id}.json`, 'metafield');
+    }
+
+    /**
+     * Creates a metafield for the given blog.
+     * @param blogId The blog's id.
+     * @param id The metafield's id.
+     * @param metafield Options for the metafield
+     */
+     public createMetafield(blogId: number, metafield: Partial<MetaFieldUpdateCreate>) {
+        return this.createRequest<Partial<MetaField>>("POST", `${blogId}/metafields.json`, 'metafield', { metafield });
+    }
+
+    /**
+     * Updates a metafield for the given blog
+     * @param blogId The blog's id.
+     * @param id The metafield's id.
+     * @param metafield Options for the metafield
+     */
+     public updateMetafield(blogId: number, id: number, metafield?: Partial<MetaFieldUpdateCreate>) {
+        return this.createRequest<Partial<MetaField>>("PUT", `${blogId}/metafields/${id}.json`, 'metafield', { metafield });
+    }
+
+    /**
+     * Deletes the metafield with the given id from an blog.
+     * @param blogId The blog's id.
+     * @param id The metafield's id.
+     */
+     public deleteMetafield(blogId: number, id: number) {
+        return this.createRequest<undefined>("DELETE", `${blogId}/metafields/${id}.json`, 'metafield');
     }
 }
 

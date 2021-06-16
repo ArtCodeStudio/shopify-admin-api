@@ -1,6 +1,6 @@
 import * as Options from "../options";
 import { BaseService } from "../infrastructure";
-import { DraftOrder } from "../interfaces";
+import { DraftOrder, MetaField, MetaFieldUpdateCreate } from "../interfaces";
 
 /**
  * A service for manipulating Shopify draft orders.
@@ -70,6 +70,62 @@ export class DraftOrders extends BaseService {
     }
 
     // TODO: Implement DraftOrders.sendInvoice
+
+
+    /**
+     * Gets a list of up to 250 metafields from the given draftOrder.
+     * @param id The draftOrder's id.
+     * @param options Options for filtering the results.
+     */
+     public listMetafields(draftOrderId: number, options?: Options.MetafieldListOptions) {
+        return this.createRequest<Partial<MetaField>[]>("GET", `${draftOrderId}/metafields.json`, 'metafields', options);
+    }
+
+    /**
+     * Returns the number of metafields belonging to the given draftOrder.
+     * @param id The draftOrder's id.
+     */
+     public countMetafields(draftOrderId: number) {
+        return this.createRequest<number>("GET", `${draftOrderId}/metafields/count.json`, 'count');
+    }
+
+    /**
+     * Gets the metafield with the given id from an draftOrder.
+     * @param draftOrderId The draftOrder's id.
+     * @param id The metafield's id.
+     */
+    public getMetafield(draftOrderId: number, id: number) {
+        return this.createRequest<Partial<MetaField>>("GET", `${draftOrderId}/metafields/${id}.json`, 'metafield');
+    }
+
+    /**
+     * Creates a metafield for the given draftOrder.
+     * @param draftOrderId The draftOrder's id.
+     * @param id The metafield's id.
+     * @param metafield Options for the metafield
+     */
+     public createMetafield(draftOrderId: number, metafield: Partial<MetaFieldUpdateCreate>) {
+        return this.createRequest<Partial<MetaField>>("POST", `${draftOrderId}/metafields.json`, 'metafield', { metafield });
+    }
+
+    /**
+     * Updates a metafield for the given draftOrder
+     * @param draftOrderId The draftOrder's id.
+     * @param id The metafield's id.
+     * @param metafield Options for the metafield
+     */
+     public updateMetafield(draftOrderId: number, id: number, metafield?: Partial<MetaFieldUpdateCreate>) {
+        return this.createRequest<Partial<MetaField>>("PUT", `${draftOrderId}/metafields/${id}.json`, 'metafield', { metafield });
+    }
+
+    /**
+     * Deletes the metafield with the given id from an draftOrder.
+     * @param draftOrderId The draftOrder's id.
+     * @param id The metafield's id.
+     */
+     public deleteMetafield(draftOrderId: number, id: number) {
+        return this.createRequest<undefined>("DELETE", `${draftOrderId}/metafields/${id}.json`, 'metafield');
+    }
 }
 
 export default DraftOrders;
