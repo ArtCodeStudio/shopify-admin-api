@@ -68,10 +68,10 @@ export class CustomerTests {
     @AsyncTest("should create a customer")
     @Timeout(5000)
     public async TestCreate() {
-        const customer = await this.create("createtest@gmail.com");
+        const customer = await this.create("createtest" + Date.now() + "@gmail.com");
 
         Expect(customer).toBeType("object");
-        Expect(customer.email).toEqual("createtest@gmail.com");
+        Expect(customer.email).toBeType("string");
         Expect(customer.first_name).toEqual("Test");
         Expect(customer.last_name).toEqual("User");
         Expect(customer.state).toEqual("disabled");
@@ -80,9 +80,10 @@ export class CustomerTests {
     @AsyncTest("should update a customer")
     @Timeout(5000)
     public async TestUpdate() {
-        const customerId = (await this.create("updatetest@gmail.com")).id;
+        const originalEmail = "updatetest" + Date.now() + "@gmail.com";
+        const customerId = (await this.create(originalEmail)).id;
 
-        const email = "updatedemail@gmail.com";
+        const email = "updatedemail" + Date.now() + "@gmail.com";
         const first_name = "NewTest";
         const last_name = "NewUser";
         const updatedCustomer = await this.service.update(customerId, {
@@ -100,7 +101,8 @@ export class CustomerTests {
     @AsyncTest("should delete a customer")
     @Timeout(5000)
     public async TestDelete() {
-      const id = (await this.create("testdelete@gmail.com", false)).id;
+      const deleteAddress = "testdelete" + Date.now() + "@gmail.com"
+      const id = (await this.create(deleteAddress, false)).id;
       let error;
 
       try {
@@ -115,7 +117,7 @@ export class CustomerTests {
     @AsyncTest("should generate an activation url")
     @Timeout(5000)
     public async TestCreateActivationUrl() {
-        const id = (await this.create("testactivation@gmail.com")).id;
+        const id = (await this.create("testactivation" + Date.now() + "@gmail.com")).id;
         const url = await this.service.createActivationUrl(id);
         Expect(url).toContain(`${Config.shopDomain}/account/activate/`);
     }
