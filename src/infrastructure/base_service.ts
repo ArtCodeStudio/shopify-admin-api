@@ -1,5 +1,5 @@
 import joinPaths from 'url-join';
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 import ShopifyError from './shopify_error';
 import uri from 'jsuri';
 // TODO use https://www.npmjs.com/package/bottleneck
@@ -121,7 +121,8 @@ export class BaseService {
       options.headers['Content-Type'] = 'application/json';
     }
 
-    //Fetch will only throw an exception when there is a network-related error, not when Shopify returns a non-200 response.
+    // Fetch will only throw an exception when there is a network-related error, not when Shopify returns a non-200 response.
+    // We re-queue the request while there are 429 errors (too many requests / rate limit exceeded)
 
     /**
      *  Queue requests and keep the call limit in check.
@@ -133,20 +134,23 @@ export class BaseService {
      *
      *  2. There is still no guarantee that a `too many requests` (code 429) will not happen if a big number of requests is added at once.
      */
-    const result = await BaseService.apiInfo[this.shopDomain].requestQueue.add(
-      async () => {
-        // Check that we don't hit call limit
-        const remaining = this.getCallLimits().remaining;
-        if (remaining && remaining < 5) {
-          return new Promise((res) => setTimeout(res, 10000 - remaining)).then(
-            () => fetch(url.toString(), options),
-          );
-        }
-        // console.log('Fetch url:', url.toString());
-        // console.log('options:', options)
-        return fetch(url.toString(), options);
-      },
-    );
+    let result: Response;
+    do {
+      result = await BaseService.apiInfo[this.shopDomain].requestQueue.add(
+        async () => {
+          // Check that we don't hit call limit
+          const remaining = this.getCallLimits().remaining;
+          if (remaining && remaining < 5) {
+            return new Promise((res) => setTimeout(res, 10000 - remaining)).then(
+              () => fetch(url.toString(), options),
+            );
+          }
+          // console.log('Fetch url:', url.toString());
+          // console.log('options:', options)
+          return fetch(url.toString(), options);
+        },
+      );
+    } while (result.status === 429);
 
     const callLimits = result.headers.get('x-shopify-shop-api-call-limit');
 
