@@ -75,7 +75,7 @@ export class CustomerTests {
     @AsyncTest("should create a customer")
     @Timeout(5000)
     public async TestCreate() {
-        const customer = await this.create("createtest" + Date.now() + "@gmail.com");
+        const customer = await this.create("createtest" + Date.now() + "@example.com");
 
         Expect(customer).toBeType("object");
         Expect(customer.email).toBeType("string");
@@ -87,10 +87,10 @@ export class CustomerTests {
     @AsyncTest("should update a customer")
     @Timeout(5000)
     public async TestUpdate() {
-        const originalEmail = "updatetest" + Date.now() + "@gmail.com";
+        const originalEmail = "updatetest" + Date.now() + "@example.com";
         const customerId = (await this.create(originalEmail)).id;
 
-        const email = "updatedemail" + Date.now() + "@gmail.com";
+        const email = "updatedemail" + Date.now() + "@example.com";
         const first_name = "NewTest";
         const last_name = "NewUser";
         const updatedCustomer = await this.service.update(customerId, {
@@ -108,7 +108,7 @@ export class CustomerTests {
     @AsyncTest("should delete a customer")
     @Timeout(5000)
     public async TestDelete() {
-      const deleteAddress = "testdelete" + Date.now() + "@gmail.com"
+      const deleteAddress = "testdelete" + Date.now() + "@example.com"
       const id = (await this.create(deleteAddress, false)).id;
       let error;
 
@@ -124,7 +124,7 @@ export class CustomerTests {
     @AsyncTest("should generate an activation url")
     @Timeout(5000)
     public async TestCreateActivationUrl() {
-        const id = (await this.create("testactivation" + Date.now() + "@gmail.com")).id;
+        const id = (await this.create("testactivation" + Date.now() + "@example.com")).id;
         const url = await this.service.createActivationUrl(id);
         Expect(url).toContain(`${Config.shopDomain}/account/activate/`);
     }

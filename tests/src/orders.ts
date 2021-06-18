@@ -63,7 +63,7 @@ export class OrderTests {
                 }
             ],
             customer: {
-                email: "abc" + Date.now() + "@gmail.com",
+                email: "abc" + Date.now() + "@example.com",
             },
             financial_status: "paid",
             total_price: 5.00,
