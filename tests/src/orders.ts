@@ -62,9 +62,11 @@ export class OrderTests {
                     price: 5,
                 }
             ],
+            customer: {
+                email: "abc" + Date.now() + "@gmail.com",
+            },
             financial_status: "paid",
             total_price: 5.00,
-            contact_email: "abc" + Date.now() + "@gmail.com",
             note: "Test note about the customer.",
         };
 
@@ -94,7 +96,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should delete an order")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test1() {
         let error: Error | undefined;
 
@@ -111,14 +113,16 @@ export class OrderTests {
     }
 
     @AsyncTest("should create an order")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test2() {
         const { order, createData } = (await this.create());
 
         Expect(order).toBeType("object");
-        Expect(createData.contact_email).toBeType("string");
-        if (createData.contact_email) {
-            Expect(order.contact_email).toBeType(createData.contact_email);
+        
+        
+        if (createData.customer?.email) {
+            Expect(createData.customer?.email).toBeType("string");
+            Expect(order.contact_email).toBe(createData.customer?.email);
         }
         
         Expect(order.id).toBeType("number")
@@ -126,7 +130,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should get an order")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test3() {
         const id = (await this.create()).order.id;
 
@@ -141,7 +145,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should create an order with only one field")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test4() {
         const id = (await this.create()).order.id;
 
@@ -155,7 +159,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should count orders")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test5() {
         await this.create();
 
@@ -165,7 +169,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should list orders")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test6() {
         await this.create();
 
@@ -188,7 +192,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should update an order")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test7() {
         const id = (await this.create()).order.id;
 
@@ -203,7 +207,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should close an order")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test8() {
         const id = (await this.create()).order.id;
         Expect(id).toBeType("number");
@@ -215,7 +219,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should open an order")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test9() {
         const id = (await this.create()).order.id;
         Expect(id).toBeType("number");
@@ -229,7 +233,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should cancel an order")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test10() {
         const id = (await this.create()).order.id;
         Expect(id).toBeType("number");
@@ -240,7 +244,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should cancel an order with options")
-    @Timeout(17000)
+    @Timeout(20000)
     public async Test11() {
         const id = (await this.create()).order.id;
         Expect(id).toBeType("number");

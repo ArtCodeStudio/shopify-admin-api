@@ -104,6 +104,7 @@ export interface Order extends ShopifyObject {
 
     /**
      * The customer's contact email address.
+     * @note Can' be used to create an order, instead use `order: { customer: {email: "..." }}`
      */
     contact_email: string | null;
 

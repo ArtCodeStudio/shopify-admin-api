@@ -32,11 +32,6 @@ export interface OrderCreate {
     cancel_reason?: string | null;
 
     /**
-     * The customer's contact email address.
-     */
-    contact_email?: string;
-
-    /**
      * The three letter code (ISO 4217) for the currency used for the payment.
      */
     currency?: string;
@@ -52,10 +47,12 @@ export interface OrderCreate {
     discount_codes?: DiscountCode[];
 
     /**
-     * The order's email address. Note?: On and after 2015-11-03, you should be using <see cref="ContactEmail"/> to refer to the customer's email address.
+     * The order's email address.
+     * @note On and after 2015-11-03, you should be using <see cref="ContactEmail"/> to refer to the customer's email address.
      * Between 2015-11-03 and 2015-12-03, updates to an order's email will also update the customer's email. This is temporary so apps can be migrated over to
      * doing customer updates rather than order updates to change the contact email. After 2015-12-03, updating updating an order's email will no longer update
      * the customer's email and apps will have to use the customer update endpoint to do so.
+     * @deprecated Use customer.email instead
      */
     email?: string;
 

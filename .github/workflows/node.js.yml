@@ -35,5 +35,5 @@ jobs:
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         SHOP_DOMAIN: ${{ secrets.SHOP_DOMAIN }}
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      run: yarn run test:no-build
+      run: yarn run test:raw
 
