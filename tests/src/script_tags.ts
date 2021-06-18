@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,9 +12,9 @@ import { Config, Expect } from './test_utils';
 
 @TestFixture("ScriptTag Tests") 
 export class ScriptTagTests {
-    private service = new Prime.ScriptTags(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.ScriptTags(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.ScriptTag[] = [];
+    private created: AdminApi.Interfaces.ScriptTag[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -117,7 +117,7 @@ export class ScriptTagTests {
         const list = await this.service.list();
 
         Expect(list.length).toBeGreaterThanOrEqualTo(1);
-        Expect(list).itemsToPassValidator<Prime.Interfaces.ScriptTag>(tag => {
+        Expect(list).itemsToPassValidator<AdminApi.Interfaces.ScriptTag>(tag => {
             Expect(tag.id).toBeType("number");
             Expect(tag.src).toBeType("string");
             Expect(tag.created_at).toBeType("string");

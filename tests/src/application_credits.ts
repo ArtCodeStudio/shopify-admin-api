@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import {
     AsyncTeardownFixture,
     AsyncTest,

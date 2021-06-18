@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,15 +12,15 @@ import { Config, Expect } from './test_utils';
 
 @TestFixture("Article Tests")
 export class ArticleTests {
-    private service = new Prime.Articles(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.Articles(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.Article[] = [];
+    private created: AdminApi.Interfaces.Article[] = [];
 
     private blogId: number = -1;
 
     @AsyncSetupFixture
     private async setupAsync() {
-        const blogs = await new Prime.Blogs(Config.shopDomain, Config.accessToken).list();
+        const blogs = await new AdminApi.Blogs(Config.shopDomain, Config.accessToken).list();
 
         Expect(blogs).toBeAnArray();
 
@@ -43,7 +43,7 @@ export class ArticleTests {
     }
 
     private async create(scheduleForDeletion = true) {
-        const createData: Partial<Prime.Interfaces.Article> = {
+        const createData: Partial<AdminApi.Interfaces.Article> = {
             title: "My article title - " + Date.now(),
             author: "John Smith",
             tags: "This Post, Has Been Tagged",

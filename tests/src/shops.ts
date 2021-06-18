@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,7 +12,7 @@ import { Config, Expect } from './test_utils';
 
 @TestFixture("Shop Tests") 
 export class ShopTests {
-    private service = new Prime.Shops(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.Shops(Config.shopDomain, Config.accessToken);
 
     @AsyncTest("should get a shop")
     @Timeout(5000)

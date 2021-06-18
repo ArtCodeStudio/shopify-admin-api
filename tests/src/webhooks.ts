@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,9 +12,9 @@ import { Config, createGuid, Expect } from './test_utils';
 
 @TestFixture("Webhook Tests") 
 export class WebhookTests {
-    private service = new Prime.Webhooks(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.Webhooks(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.Webhook[] = [];
+    private created: AdminApi.Interfaces.Webhook[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {

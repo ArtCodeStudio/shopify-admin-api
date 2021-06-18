@@ -702,7 +702,7 @@ const order = await service.create({
     ],
     financial_status: "paid",
     total_price: 5.00,
-    email: Date.now + "@example.com",
+    email: Date.now() + "@gmail.com",
     note: "Test note about the customer.",
 });
 ```

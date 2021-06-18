@@ -1,6 +1,6 @@
-import * as Prime from '../../../..';
+import * as AdminApi from '../../../..';
 
 export interface IProductTestData {
   info: string;
-  product: Prime.Interfaces.ProductUpdateCreate;
+  product: AdminApi.Interfaces.ProductUpdateCreate;
 }

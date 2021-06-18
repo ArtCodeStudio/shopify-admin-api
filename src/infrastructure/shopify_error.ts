@@ -46,7 +46,17 @@ export class ShopifyError extends Error {
     }
   }
 
+  /**
+   * @deprecated
+   */
   public get isShopifyPrime() {
+    return true;
+  }
+
+  /**
+   * @deprecated
+   */
+   public get isShopifyAdminApi() {
     return true;
   }
 

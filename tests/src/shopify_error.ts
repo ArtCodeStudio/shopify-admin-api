@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -25,22 +25,22 @@ export class ShopifyErrorTests {
 
     private rateLimitResponse = Object.assign({}, this.genericResponse, { statusText: "Too Many Requests", size: "Too Many Requests".length, status: 429 /* Too Many Requests */});
 
-    private genericError = new Prime.Infrastructure.ShopifyError(this.genericResponse, {
+    private genericError = new AdminApi.Infrastructure.ShopifyError(this.genericResponse, {
         errors: {
             order: "must not be null"
         }
     });
 
-    private rateLimitError = new Prime.Infrastructure.ShopifyError(this.rateLimitResponse, {
+    private rateLimitError = new AdminApi.Infrastructure.ShopifyError(this.rateLimitResponse, {
         errors: {
             error: "Exceeded 2 calls per second for api client. Reduce request rates to resume uninterrupted service."
         }
     })
 
-    @AsyncTest("should have an isShopifyPrime flag")
+    @AsyncTest("should have an isShopifyAdminApi flag")
     @Timeout(5000)
     public async Test1() {
-        Expect(this.genericError.isShopifyPrime).toEqual(true);
+        Expect(this.genericError.isShopifyAdminApi).toEqual(true);
     }
 
     @AsyncTest("should have a status code")
@@ -80,9 +80,9 @@ export class ShopifyErrorTests {
     @AsyncTest("should not fail when given an unknown body")
     @Timeout(5000)
     public async Test7() {
-        const error = new Prime.Infrastructure.ShopifyError(this.genericResponse, {} as any);
+        const error = new AdminApi.Infrastructure.ShopifyError(this.genericResponse, {} as any);
 
-        Expect(error.isShopifyPrime).toEqual(true);
+        Expect(error.isShopifyAdminApi).toEqual(true);
         Expect(error.statusText).toEqual("Unprocessable Entity");
         Expect(error.statusCode).toEqual(422);
         Expect(error.errors).not.toBeNull();
@@ -92,7 +92,7 @@ export class ShopifyErrorTests {
     @AsyncTest("should parse a generic error")
     @Timeout(5000)
     public async Test8() {
-        const error = new Prime.Infrastructure.ShopifyError(this.genericResponse, {
+        const error = new AdminApi.Infrastructure.ShopifyError(this.genericResponse, {
             errors: "Test error message"
         });
 
@@ -103,7 +103,7 @@ export class ShopifyErrorTests {
     @AsyncTest("should parse an error with multiple properties")
     @Timeout(5000)
     public async Test9() {
-        const error = new Prime.Infrastructure.ShopifyError(this.genericResponse, {
+        const error = new AdminApi.Infrastructure.ShopifyError(this.genericResponse, {
             errors: {
                 order: "must not be null",
                 customer: [
@@ -123,7 +123,7 @@ export class ShopifyErrorTests {
     @AsyncTest("should parse an oauth code used error")
     @Timeout(5000)
     public async Test10() {
-        const error = new Prime.Infrastructure.ShopifyError(this.genericResponse, { error: "invalid_request", error_description: "authorization code was not found or was already used" });
+        const error = new AdminApi.Infrastructure.ShopifyError(this.genericResponse, { error: "invalid_request", error_description: "authorization code was not found or was already used" });
 
         Expect(error.errors["invalid_request"]).toContain("authorization code was not found or was already used");
     }

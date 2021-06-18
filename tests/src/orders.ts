@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,9 +12,9 @@ import { Config, Expect } from './test_utils';
 
 @TestFixture("Order Tests")
 export class OrderTests {
-    private service = new Prime.Orders(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.Orders(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.Order[] = [];
+    private created: AdminApi.Interfaces.Order[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -33,7 +33,7 @@ export class OrderTests {
 
     private async create(scheduleForDeletion = true) {
 
-        const createData: Prime.Interfaces.OrderCreate = {
+        const createData: AdminApi.Interfaces.OrderCreate = {
             billing_address: {
                 address1: "123 4th Street",
                 city: "Minneapolis",
@@ -64,7 +64,7 @@ export class OrderTests {
             ],
             financial_status: "paid",
             total_price: 5.00,
-            contact_email: "abc" + Date.now() + "@example.com",
+            contact_email: "abc" + Date.now() + "@gmail.com",
             note: "Test note about the customer.",
         };
 
@@ -74,6 +74,19 @@ export class OrderTests {
             this.created.push(order);
         };
 
+        /*
+         * Wait 12 seconds because if we are using the customer create endpoint with a trial or Partner development store,
+         * then we can create no more than 5 new orders per minute.
+         * 60 seconds / 5 orders = 12 seconds
+         * @see https://shopify.dev/docs/admin-api/rest/reference/orders/order
+         */
+        inspect("Waiting 12 seconds to let the order create API endpoint rate limit empty.")
+        
+        await new Promise<void>(resolve => setTimeout(() => {
+            inspect("Continuing.")
+            resolve();
+        }, 12000));
+
         return {
             createData,
             order,
@@ -81,7 +94,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should delete an order")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test1() {
         let error: Error | undefined;
 
@@ -98,7 +111,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should create an order")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test2() {
         const { order, createData } = (await this.create());
 
@@ -113,7 +126,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should get an order")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test3() {
         const id = (await this.create()).order.id;
 
@@ -128,7 +141,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should create an order with only one field")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test4() {
         const id = (await this.create()).order.id;
 
@@ -142,7 +155,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should count orders")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test5() {
         await this.create();
 
@@ -152,7 +165,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should list orders")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test6() {
         await this.create();
 
@@ -175,7 +188,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should update an order")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test7() {
         const id = (await this.create()).order.id;
 
@@ -190,7 +203,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should close an order")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test8() {
         const id = (await this.create()).order.id;
         Expect(id).toBeType("number");
@@ -202,7 +215,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should open an order")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test9() {
         const id = (await this.create()).order.id;
         Expect(id).toBeType("number");
@@ -216,7 +229,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should cancel an order")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test10() {
         const id = (await this.create()).order.id;
         Expect(id).toBeType("number");
@@ -227,7 +240,7 @@ export class OrderTests {
     }
 
     @AsyncTest("should cancel an order with options")
-    @Timeout(5000)
+    @Timeout(17000)
     public async Test11() {
         const id = (await this.create()).order.id;
         Expect(id).toBeType("number");

@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,13 +12,13 @@ import { Config, createGuid, Expect } from './test_utils';
 
 @TestFixture("PriceRules Tests")
 export class OrderTests {
-    private service = new Prime.PriceRules(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.PriceRules(Config.shopDomain, Config.accessToken);
 
-    private priceRulesDiscountService = new Prime.PriceRuleDiscounts(Config.shopDomain, Config.accessToken);
+    private priceRulesDiscountService = new AdminApi.PriceRuleDiscounts(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.PriceRule[] = [];
+    private created: AdminApi.Interfaces.PriceRule[] = [];
 
-    private createdDiscounts: { [prId: number]: Prime.Interfaces.PriceRuleDiscountCode[] } = {};
+    private createdDiscounts: { [prId: number]: AdminApi.Interfaces.PriceRuleDiscountCode[] } = {};
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -85,8 +85,8 @@ export class OrderTests {
     @AsyncTest("should create a price rule")
     @Timeout(5000)
     public async Test1() {
-        let rule: Prime.Interfaces.PriceRule;
-        let discount: Prime.Interfaces.PriceRuleDiscountCode;
+        let rule: AdminApi.Interfaces.PriceRule;
+        let discount: AdminApi.Interfaces.PriceRuleDiscountCode;
 
         try {
             rule = await this.create();

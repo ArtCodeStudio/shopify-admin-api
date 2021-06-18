@@ -25,13 +25,15 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Install
       run: yarn install
-    - name: Build
+    - name: Build lib
       run: yarn run build
+    - name: Build test
+      run: yarn run build:tests
     - name: Test
       env:
         API_KEY: ${{ secrets.API_KEY }}
         SECRET_KEY: ${{ secrets.SECRET_KEY }}
         SHOP_DOMAIN: ${{ secrets.SHOP_DOMAIN }}
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      run: yarn test
+      run: yarn run test:no-build
 

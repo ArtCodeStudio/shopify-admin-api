@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,9 +12,9 @@ import { Config, Expect } from './test_utils';
 
 @TestFixture("SmartCollection Tests") 
 export class SmartCollectionTests {
-    private service = new Prime.SmartCollections(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.SmartCollections(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.SmartCollection[] = [];
+    private created: AdminApi.Interfaces.SmartCollection[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -57,7 +57,7 @@ export class SmartCollectionTests {
         const list = await this.service.list();
         
         Expect(list).toBeAnArray();
-        Expect(list).itemsToPassValidator<Prime.Interfaces.SmartCollection>(item => {
+        Expect(list).itemsToPassValidator<AdminApi.Interfaces.SmartCollection>(item => {
             Expect(item.id).toBeType("number");
             Expect(item.id).toBeGreaterThanOrEqualTo(1);
         })

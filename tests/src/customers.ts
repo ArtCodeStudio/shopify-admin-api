@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,9 +12,9 @@ import { Config, Expect } from './test_utils';
 
 @TestFixture("Customer Tests")
 export class CustomerTests {
-    private service = new Prime.Customers(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.Customers(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.Customer[] = [];
+    private created: AdminApi.Interfaces.Customer[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -45,24 +45,31 @@ export class CustomerTests {
         const list = await this.service.list();
 
         Expect(list).toBeAnArray();
-        Expect(list).itemsToPassValidator<Prime.Interfaces.Customer>(i => {
+        Expect(list).itemsToPassValidator<AdminApi.Interfaces.Customer>(i => {
             Expect(i).toBeType("object");
             Expect(i.id).toBeGreaterThan(0);
         })
     }
 
     private async create(email: string, scheduleForDeletion = true) {
-        const createData: Partial<Prime.Models.Customer> = {
+        const createData: Partial<AdminApi.Models.Customer> = {
             email: email,
             first_name: "Test",
             last_name: "User"
         }
-        const obj = await this.service.create(createData);
+        let customerCreateResult: AdminApi.Models.Customer;
+        try {
+            customerCreateResult = await this.service.create(createData);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+        
 
         if (scheduleForDeletion) {
-            this.created.push(obj);
+            this.created.push(customerCreateResult);
         }
-        return obj;
+        return customerCreateResult;
     }
 
     @AsyncTest("should create a customer")

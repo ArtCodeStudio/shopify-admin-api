@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,9 +12,9 @@ import { Config, Expect } from './test_utils';
 
 @TestFixture("Blog tests")
 export class BlogTests {
-    private service = new Prime.Blogs(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.Blogs(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.Blog[] = [];
+    private created: AdminApi.Interfaces.Blog[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {

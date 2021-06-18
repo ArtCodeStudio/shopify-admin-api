@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -10,12 +10,12 @@ import {
     } from 'alsatian';
 import { Config, Expect } from './test_utils';
 
-@TestFixture("Prime.Auth.buildAuthorizationUrl tests")
+@TestFixture("AdminApi.Auth.buildAuthorizationUrl tests")
 export class BuildAuthorizationUrlTests {
     @AsyncTest("should build a valid authorization url")
     @Timeout(10000)
     public async Test1() {
-        const url = await Prime.Auth.buildAuthorizationUrl(["read_orders", "write_orders"], Config.shopDomain, Config.apiKey);
+        const url = await AdminApi.Auth.buildAuthorizationUrl(["read_orders", "write_orders"], Config.shopDomain, Config.apiKey);
 
         Expect(url).toBeType("string");
         Expect(url).toContain(Config.shopDomain);
@@ -28,7 +28,7 @@ export class BuildAuthorizationUrlTests {
     @Timeout(10000)
     public async Test2() {
         const redirect = "https://example.com/my/path?query=string";
-        const url = await Prime.Auth.buildAuthorizationUrl(["read_orders", "write_orders"], Config.shopDomain, Config.apiKey, redirect);
+        const url = await AdminApi.Auth.buildAuthorizationUrl(["read_orders", "write_orders"], Config.shopDomain, Config.apiKey, redirect);
 
         Expect(url).toBeType("string");
         Expect(url).toContain(Config.shopDomain);
@@ -42,7 +42,7 @@ export class BuildAuthorizationUrlTests {
     @Timeout(10000)
     public async Test3() {
         const state = "1780650a-2610-46ca-986a-830f4dcb8085";
-        const url = await Prime.Auth.buildAuthorizationUrl(["read_orders", "write_orders"], Config.shopDomain, Config.apiKey, undefined, state);
+        const url = await AdminApi.Auth.buildAuthorizationUrl(["read_orders", "write_orders"], Config.shopDomain, Config.apiKey, undefined, state);
 
         Expect(url).toBeType("string");
         Expect(url).toContain(Config.shopDomain);
@@ -57,7 +57,7 @@ export class BuildAuthorizationUrlTests {
     public async Test4() {
         const redirect = "https://example.com/my/path?query=string";
         const state = "1780650a-2610-46ca-986a-830f4dcb8085";
-        const url = await Prime.Auth.buildAuthorizationUrl(["read_orders", "write_orders"], Config.shopDomain, Config.apiKey, redirect, state);
+        const url = await AdminApi.Auth.buildAuthorizationUrl(["read_orders", "write_orders"], Config.shopDomain, Config.apiKey, redirect, state);
 
         Expect(url).toBeType("string");
         Expect(url).toContain(Config.shopDomain);
@@ -73,7 +73,7 @@ export class BuildAuthorizationUrlTests {
     public async Test5() {
         const redirect = "https://example.com/my/path?query=string";
         const state = "1780650a-2610-46ca-986a-830f4dcb8085";
-        const url = await Prime.Auth.buildAuthorizationUrl(["read_orders", "write_orders"], Config.shopDomain, Config.apiKey, redirect, undefined, ["per-user"]);
+        const url = await AdminApi.Auth.buildAuthorizationUrl(["read_orders", "write_orders"], Config.shopDomain, Config.apiKey, redirect, undefined, ["per-user"]);
 
         Expect(url).toBeType("string");
         Expect(url).toContain(Config.shopDomain);
@@ -86,12 +86,12 @@ export class BuildAuthorizationUrlTests {
     }
 }
 
-@TestFixture("Prime.Auth.isValidShopifyDomain tests")
+@TestFixture("AdminApi.Auth.isValidShopifyDomain tests")
 export class IsValidShopifyDomainTests {
     @AsyncTest("should return true for a valid domain")
     @Timeout(10000)
     public async Test1() {
-        const isValid = await Prime.Auth.isValidShopifyDomain(Config.shopDomain);
+        const isValid = await AdminApi.Auth.isValidShopifyDomain(Config.shopDomain);
 
         Expect(isValid).toBe(true);
     }
@@ -99,14 +99,14 @@ export class IsValidShopifyDomainTests {
     @AsyncTest("should return false for an invalid domain")
     @Timeout(10000)
     public async Test2() {
-        const isValid = await Prime.Auth.isValidShopifyDomain("example.com");
+        const isValid = await AdminApi.Auth.isValidShopifyDomain("example.com");
 
         Expect(isValid).toEqual(false);
     }
 }
 
 // TODO test should skipped or work with other test environment variables
-@TestFixture("Prime.Auth.isAuthenticProxyRequest tests")
+@TestFixture("AdminApi.Auth.isAuthenticProxyRequest tests")
 export class IsAuthenticProxyRequestTests {
     @AsyncTest("should return true for a valid request")
     @Timeout(10000)
@@ -118,7 +118,7 @@ export class IsAuthenticProxyRequestTests {
             signature: "368BD20FA50494E71D3A44DD24D7AF29C1F404C1E6CDA381E7AE263C185199BE",
             path_prefix: "/apps/stages-tracking-widget-1",
         }
-        const result = await Prime.Auth.isAuthenticProxyRequest(qs, Config.secretKey);
+        const result = await AdminApi.Auth.isAuthenticProxyRequest(qs, Config.secretKey);
 
         Expect(result).toEqual(true);
     }
@@ -126,14 +126,14 @@ export class IsAuthenticProxyRequestTests {
     @AsyncTest("should return false for an invalid request")
     @Timeout(10000)
     public async Test2() {
-        const result = await Prime.Auth.isAuthenticProxyRequest({ signature: "abcd" }, Config.secretKey);
+        const result = await AdminApi.Auth.isAuthenticProxyRequest({ signature: "abcd" }, Config.secretKey);
 
         Expect(result).toEqual(false);
     }
 }
 
 // TODO test should skipped or work with other test environment variables
-@TestFixture("Prime.Auth.isAuthenticRequest tests")
+@TestFixture("AdminApi.Auth.isAuthenticRequest tests")
 export class IsAuthenticRequestTests {
     @AsyncTest("should return true for a valid request")
     @Timeout(10000)
@@ -145,7 +145,7 @@ export class IsAuthenticRequestTests {
             timestamp: "1464593148",
             hmac: "8E6637D03C24AB5C350626E34833FE52D349111C772B2E941C68BB2F62EAABAB",
         }
-        const result = await Prime.Auth.isAuthenticRequest(qs, Config.secretKey);
+        const result = await AdminApi.Auth.isAuthenticRequest(qs, Config.secretKey);
 
         Expect(result).toEqual(true);
     }
@@ -156,14 +156,14 @@ export class IsAuthenticRequestTests {
         const qs = {
             hmac: "abcd"
         }
-        const result = await Prime.Auth.isAuthenticRequest(qs, Config.secretKey);
+        const result = await AdminApi.Auth.isAuthenticRequest(qs, Config.secretKey);
 
         Expect(result).toEqual(false);
     }
 }
 
 // TODO test should skipped or work with other test environment variables
-@TestFixture("Prime.Auth.isAuthenticWebhook tests")
+@TestFixture("AdminApi.Auth.isAuthenticWebhook tests")
 export class IsAuthenticWebhookTests {
     private body = '{"order":{"id":123456}}';
     private header = "QMXJBUSXH65TNBFUTCKYOL5MKPHPMI/UL4MLTSKNEYC=";
@@ -171,7 +171,7 @@ export class IsAuthenticWebhookTests {
     @AsyncTest("should return true for a valid request with a header string")
     @Timeout(10000)
     public async Test1() {
-        const result = await Prime.Auth.isAuthenticWebhook(this.header, this.body, Config.secretKey);
+        const result = await AdminApi.Auth.isAuthenticWebhook(this.header, this.body, Config.secretKey);
 
         Expect(result).toEqual(true);
     }
@@ -179,7 +179,7 @@ export class IsAuthenticWebhookTests {
     @AsyncTest('should return true for a valid request with a header object')
     @Timeout(10000)
     public async Test2() {
-        const result = await Prime.Auth.isAuthenticWebhook({ "X-Shopify-Hmac-SHA256": this.header }, this.body, Config.secretKey);
+        const result = await AdminApi.Auth.isAuthenticWebhook({ "X-Shopify-Hmac-SHA256": this.header }, this.body, Config.secretKey);
 
         Expect(result).toEqual(true);
     }
@@ -187,7 +187,7 @@ export class IsAuthenticWebhookTests {
     @AsyncTest('should return true for a valid request with a header object and lowercase header name')
     @Timeout(10000)
     public async Test3() {
-        const result = await Prime.Auth.isAuthenticWebhook({ "x-shopify-hmac-sha256": this.header }, this.body, Config.secretKey);
+        const result = await AdminApi.Auth.isAuthenticWebhook({ "x-shopify-hmac-sha256": this.header }, this.body, Config.secretKey);
 
         Expect(result).toEqual(true);
     }
@@ -195,7 +195,7 @@ export class IsAuthenticWebhookTests {
     @AsyncTest("should return false for an invalid request")
     @Timeout(10000)
     public async Test4() {
-        const result = await Prime.Auth.isAuthenticWebhook({}, this.body, Config.secretKey);
+        const result = await AdminApi.Auth.isAuthenticWebhook({}, this.body, Config.secretKey);
 
         Expect(result).toEqual(false);
     }

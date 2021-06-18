@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,9 +12,9 @@ import { Config, Expect } from './test_utils';
 
 @TestFixture("CustomCollection Tests")
 export class CustomCollectionTests {
-    private service = new Prime.CustomCollections(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.CustomCollections(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.CustomCollection[] = [];
+    private created: AdminApi.Interfaces.CustomCollection[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
@@ -41,7 +41,7 @@ export class CustomCollectionTests {
         // };
 
         // return obj;
-        return {} as Prime.Interfaces.CustomCollection;
+        return {} as AdminApi.Interfaces.CustomCollection;
     }
 
     @AsyncTest("should count collections")
@@ -58,7 +58,7 @@ export class CustomCollectionTests {
         const list = await this.service.list();
         
         Expect(list).toBeAnArray();
-        Expect(list).itemsToPassValidator<Prime.Interfaces.CustomCollection>(i => {
+        Expect(list).itemsToPassValidator<AdminApi.Interfaces.CustomCollection>(i => {
             Expect(i).toBeType("object");
             Expect(i.id).toBeGreaterThan(0);
         })

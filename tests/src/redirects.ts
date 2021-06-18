@@ -1,4 +1,4 @@
-import * as Prime from '../..';
+import * as AdminApi from '../..';
 import inspect from 'logspect/bin';
 import {
     AsyncSetupFixture,
@@ -12,9 +12,9 @@ import { Config, createGuid, Expect } from './test_utils';
 
 @TestFixture("Redirect Tests") 
 export class RedirectTests {
-    private service = new Prime.Redirects(Config.shopDomain, Config.accessToken);
+    private service = new AdminApi.Redirects(Config.shopDomain, Config.accessToken);
 
-    private created: Prime.Interfaces.Redirect[] = [];
+    private created: AdminApi.Interfaces.Redirect[] = [];
 
     @AsyncTeardownFixture
     private async teardownAsync() {
