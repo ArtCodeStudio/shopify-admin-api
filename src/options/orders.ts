@@ -9,7 +9,7 @@ export interface OrderCountOptions extends DateOptions {
 
     financial_status?: FinancialStatus;
 
-    fulfillment_status?: "shipped" | "partial" | "unshipped" | "any" | "unfulfilled";
+    fulfillment_status?: "shipped" | "partial" | "unshipped" | "any" | "unfulfilled"; // The options to filter by fulfillment_status are different then the fulfillment_status values
 }
 
 export interface OrderListOptions extends FieldOptions, DateOptions, ProcessedOptions, ListOptions, OrderCountOptions {
