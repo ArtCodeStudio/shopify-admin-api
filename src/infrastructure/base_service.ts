@@ -11,6 +11,7 @@ export interface CallLimits {
   remaining: number;
   current: number;
   max: number;
+  retryAfter: number | null;
 }
 
 class ApiInfo {
@@ -18,33 +19,79 @@ class ApiInfo {
   requestQueue: PQueue;
   constructor(accessToken: string) {
     this.accessToken = accessToken;
+    // A concurrency of 1 guarantees that responses come in the same order as requested.
     this.requestQueue = new PQueue({ concurrency: 1 });
   }
+
+  /**
+   * As a reasonable default, assume the bucket is half full and the limit is 40.
+   * This is updated after the first response from Shopify.
+   */
   private _callLimits: CallLimits = {
-    timestamp: 0,
-    remaining: 0,
-    current: 0,
-    max: 0,
+    timestamp: Date.now(),
+    remaining: 20,
+    current: 20,
+    max: 40,
+    retryAfter: null,
   };
-  setCallLimits(val: string): CallLimits {
-    const [current, max] = val.split('/').map((s) => parseInt(s));
-    this._callLimits.timestamp = Date.now();
+
+  /**
+   * Sets the call-limits from the last Shopify response header x-shopify-shop-api-call-limit'.
+   * This is a string of the form `${current}/${max}`, indicating how full the "leaky bucket" of requests already is.
+   * In case of a 429 (too many requests) error, Shopify may additionally provide a 'retry-after' header, indicating
+   * the number of seconds when the request should be retried.
+   * This is all taken into account for timing the next API call.
+   * 
+   * @param val string
+   * @param timestamp number | null
+   * @param retryAfter number | null
+   * @returns CallLimits
+   * 
+   * TODO: Certain endpoints have limits that differ from the normal bucket size. For example, order.create is limited
+   * to 5 per minute for development stores. These individual limits should be added to the individual API service
+   * classes where they apply.
+   */
+  setCallLimits(limits: string, retryAfter: string | null = null, timestamp: null | number = null): CallLimits {
+    const [current, max] = limits.split('/').map((s) => parseInt(s));
+    const oldTimestamp = this._callLimits.timestamp;
+    timestamp = timestamp || Date.now();
+    this._callLimits.timestamp = timestamp;
     this._callLimits.remaining = max - current;
     this._callLimits.max = max;
     this._callLimits.current = current;
+    this._callLimits.retryAfter = retryAfter && parseFloat(retryAfter) || this._callLimits.retryAfter && Math.max(0, (this._callLimits.retryAfter - timestamp + oldTimestamp)/1000);
     return this._callLimits;
   }
-  getCallLimits(): CallLimits {
+
+  /**
+   * Gets the current call limits, calculated from the last response by Shopify and the time passed since then.
+   * Optional parameter `increaseCurrent` increments the stored bucket fill state pre-emptively. This is done before making a request,
+   * so that the limit is already updated to the higher fill state before a response comes back.
+   *
+   * @param increaseCurrent number
+   * @returns CallLimits
+   */
+  getCallLimits(increaseCurrent: number = 0): CallLimits {
+    const now = Date.now();
     const limits = { ...this._callLimits };
-    const secondsPassed = (Date.now() - limits.timestamp) / 1000;
-    limits.current = Math.max(0, limits.current - 2 * secondsPassed);
+    const secondsPassed = (now - limits.timestamp) / 1000;
+    limits.current = Math.max(0, increaseCurrent + limits.current - 2 * secondsPassed);
     limits.remaining = limits.max - limits.current;
+    limits.timestamp = now;
+    if (limits.retryAfter) {
+      limits.retryAfter = Math.max(0, limits.retryAfter - secondsPassed);
+    }
+    // If we increase the current fill state, we must update the base for our calculations.
+    if (increaseCurrent) {
+      this._callLimits = { ...limits };
+    }
     return limits;
   }
 }
 
 export class BaseService {
-  private static apiInfo: { [key: string]: ApiInfo } = {};
+  private static _apiInfo: { [key: string]: ApiInfo } = {};
+  public apiInfo = BaseService._apiInfo;
 
   constructor(
     private shopDomain: string,
@@ -56,15 +103,15 @@ export class BaseService {
       this.resource = 'admin/api/2021-07/' + resource;
     }
     if (
-      !BaseService.apiInfo[shopDomain] ||
-      BaseService.apiInfo[shopDomain].accessToken !== accessToken
+      !this.apiInfo[shopDomain] ||
+      this.apiInfo[shopDomain].accessToken !== accessToken
     ) {
-      BaseService.apiInfo[shopDomain] = new ApiInfo(accessToken);
+      this.apiInfo[shopDomain] = new ApiInfo(accessToken);
     }
   }
 
-  public getCallLimits(): CallLimits {
-    return BaseService.apiInfo[this.shopDomain].getCallLimits();
+  public getCallLimits(increaseCurrent: number = 0): CallLimits {
+    return this.apiInfo[this.shopDomain].getCallLimits(increaseCurrent);
   }
 
   public static buildDefaultHeaders() {
@@ -134,32 +181,36 @@ export class BaseService {
      *
      *  2. There is still no guarantee that a `too many requests` (code 429) will not happen if a big number of requests is added at once.
      */
-    let result: Response;
-    do {
-      result = await BaseService.apiInfo[this.shopDomain].requestQueue.add(
-        async () => {
+    let result = await BaseService._apiInfo[this.shopDomain].requestQueue.add(
+      async () => {
+        do {
           // Check that we don't hit call limit
-          const remaining = this.getCallLimits().remaining;
-          if (remaining && remaining < 5) {
-            return new Promise((res) => setTimeout(res, 10000 - remaining)).then(
-              () => fetch(url.toString(), options),
-            );
+          let { remaining, retryAfter } = this.getCallLimits();
+
+          while (remaining < 5 || retryAfter && retryAfter > 0) {
+            ({ remaining, retryAfter } = this.getCallLimits());
+            await new Promise((res) => setTimeout(res, Math.max((5 - remaining) * 500), (retryAfter || 0) * 1000));
           }
-          // console.log('Fetch url:', url.toString());
-          // console.log('options:', options)
-          return fetch(url.toString(), options);
-        },
-      );
-    } while (result.status === 429);
 
-    const callLimits = result.headers.get('x-shopify-shop-api-call-limit');
+          let res = await fetch(url.toString(), options);
+          const headerCallLimits = res.headers.get('x-shopify-shop-api-call-limit');
+          const headerRetryAfter = res.headers.get('retry-after');
 
-    if (callLimits) {
-      BaseService.apiInfo[this.shopDomain].setCallLimits(callLimits);
-    }
+          if (headerCallLimits) {
+            this.apiInfo[this.shopDomain].setCallLimits(headerCallLimits, headerRetryAfter);
+          }
+
+          // Continue the loop while we get 429 errors
+          if (res.status === 429) {
+            continue;
+          }
+          return res;
+        } while (true);
+      }
+    );
 
     // Shopify implement 204 - no content for DELETE requests
-    if (method === 'DELETE' && result.status == 204) {
+    if (method === 'DELETE' && result.status === 204) {
       return;
     }
 

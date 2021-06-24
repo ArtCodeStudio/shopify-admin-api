@@ -22,7 +22,7 @@ export class ShopifyError extends Error {
     public body: ErrorType1 | ErrorType2 | ErrorType3,
   ) {
     super();
-
+    this.callLimits = response.headers?.get('x-shopify-shop-api-call-limit');
     this.statusCode = response.status;
     this.statusText = response.statusText;
     this.apiRateLimitReached = this.statusCode === 429 /* Too Many Requests */;
@@ -68,6 +68,8 @@ export class ShopifyError extends Error {
   public statusCode: number;
 
   public statusText: string;
+
+  public callLimits: string | null;
 
   public errors: { [index: string]: string[] } = {};
 }
