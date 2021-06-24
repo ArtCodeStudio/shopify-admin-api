@@ -1,6 +1,5 @@
 import { OrderStatus} from "../enums/order_status";
 import { FinancialStatus } from "../enums/financial_status";
-import { FulfillmentStatus } from "../enums/fulfillment_status";
 import { InventoryBehavior } from "../enums/inventory_behavior";
 import { OrderCancelReason } from "../enums/order_cancel_reason";
 import { DateOptions, FieldOptions, ListOptions, ProcessedOptions } from "./base";
@@ -10,7 +9,7 @@ export interface OrderCountOptions extends DateOptions {
 
     financial_status?: FinancialStatus;
 
-    fulfillment_status?: FulfillmentStatus;
+    fulfillment_status?: "shipped" | "partial" | "unshipped" | "any" | "unfulfilled"; // The options to filter by fulfillment_status are different then the fulfillment_status values
 }
 
 export interface OrderListOptions extends FieldOptions, DateOptions, ProcessedOptions, ListOptions, OrderCountOptions {
@@ -44,7 +43,7 @@ export interface OrderCancelOptions {
     restock?: boolean;
 
     /**
-     * The reason for the order cancellation. 
+     * The reason for the order cancellation.
      */
     reason?: OrderCancelReason;
 
