@@ -77,17 +77,17 @@ export class OrderTests {
         };
 
         /*
-         * Wait 24 seconds because if we are using the customer create endpoint with a trial or Partner development store,
+         * Wait 12 seconds because if we are using the customer create endpoint with a trial or Partner development store,
          * then we can create no more than 5 new orders per minute.
-         * 60 seconds / 5 orders = 12 seconds (but because two tests run in parallel * 2 = 24)
+         * 60 seconds / 5 orders = 12 seconds
          * @see https://shopify.dev/docs/admin-api/rest/reference/orders/order
          */
-        inspect("Waiting 24 seconds to let the order create API endpoint rate limit empty.")
+        inspect("Waiting 12 seconds to let the order create API endpoint rate limit empty.")
         
         await new Promise<void>(resolve => setTimeout(() => {
             inspect("Continuing.")
             resolve();
-        }, 24000));
+        }, 12000));
 
         return {
             createData,
