@@ -110,7 +110,7 @@ q
         let error: Error | undefined;
 
         try {
-            const id = (await this.create()).order.id;
+            const id = (await this.create(false)).order.id;
             Expect(id).toBeType("number");
 
             await this.service.delete(id);
