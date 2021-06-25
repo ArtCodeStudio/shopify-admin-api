@@ -31,69 +31,78 @@ export class OrderTests {
         }, 3000));
     }
 
-    private async create(scheduleForDeletion = true) {
+    private create = (() => {
+        let lastCreate = Date.now();
 
-        const createData: AdminApi.Interfaces.OrderCreate = {
-            billing_address: {
-                address1: "123 4th Street",
-                city: "Minneapolis",
-                province: "Minnesota",
-                province_code: "MN",
-                zip: "55401",
-                phone: "555-555-5555",
-                first_name: "John",
-                last_name: "Doe",
-                company: "Tomorrow Corporation",
-                country: "United States",
-                country_code: "US",
-                default: true,
-            },
-            line_items: [
-                {
-                    name: "Test Line Item",
-                    title: "Test Line Item Title",
-                    quantity: 2,
-                    price: 5,
+        return async (scheduleForDeletion = true) => {
+            const createData: AdminApi.Interfaces.OrderCreate = {
+                billing_address: {
+                    address1: "123 4th Street",
+                    city: "Minneapolis",
+                    province: "Minnesota",
+                    province_code: "MN",
+                    zip: "55401",
+                    phone: "555-555-5555",
+                    first_name: "John",
+                    last_name: "Doe",
+                    company: "Tomorrow Corporation",
+                    country: "United States",
+                    country_code: "US",
+                    default: true,
                 },
-                {
-                    name: "Test Line Item 2",
-                    title: "Test Line Item Title 2",
-                    quantity: 2,
-                    price: 5,
-                }
-            ],
-            customer: {
-                email: "abc" + Date.now() + "@example.com",
-            },
-            financial_status: "paid",
-            total_price: 5.00,
-            note: "Test note about the customer.",
-        };
+                line_items: [
+                    {
+                        name: "Test Line Item",
+                        title: "Test Line Item Title",
+                        quantity: 2,
+                        price: 5,
+                    },
+                    {
+                        name: "Test Line Item 2",
+                        title: "Test Line Item Title 2",
+                        quantity: 2,
+                        price: 5,
+                    }
+                ],
+                customer: {
+                    email: "abc" + Date.now() + "@example.com",
+                },
+                financial_status: "paid",
+                total_price: 5.00,
+                note: "Test note about the customer.",
+            };
 
-        const order = await this.service.create(createData, undefined, { send_receipt: false, send_fulfillment_receipt: false })
+            /*
+            * Wait up to 12 seconds since last order create because if we are using the order create endpoint with a
+            * trial or Partner development store, then we can create no more than 5 new orders per minute.
+            * 60 seconds / 5 orders = 12 seconds
+            * @see https://shopify.dev/docs/admin-api/rest/reference/orders/order
+            */
+            const now = Date.now();
+            const timeDiff = lastCreate + 12000 - now;
 
-        if (scheduleForDeletion) {
-            this.created.push(order);
-        };
+            if (timeDiff > 0) {
+                inspect(`Waiting ${(timeDiff / 1000).toFixed(2)} seconds to let the order create API endpoint rate limit empty.`);
 
-        /*
-         * Wait 12 seconds because if we are using the customer create endpoint with a trial or Partner development store,
-         * then we can create no more than 5 new orders per minute.
-         * 60 seconds / 5 orders = 12 seconds
-         * @see https://shopify.dev/docs/admin-api/rest/reference/orders/order
-         */
-        inspect("Waiting 12 seconds to let the order create API endpoint rate limit empty.")
-        
-        await new Promise<void>(resolve => setTimeout(() => {
-            inspect("Continuing.")
-            resolve();
-        }, 12000));
+                await new Promise<void>(resolve => setTimeout(() => {
+                    inspect("Continuing.")
+                    resolve();
+                }, timeDiff));
+            }
 
-        return {
-            createData,
-            order,
+            lastCreate = now;
+            const order = await this.service.create(createData, undefined, { send_receipt: false, send_fulfillment_receipt: false })
+q
+            if (scheduleForDeletion) {
+                this.created.push(order);
+            };
+
+            return {
+                createData,
+                order,
+            }
         }
-    }
+    })()
 
     @AsyncTest("should delete an order")
     @Timeout(60000)

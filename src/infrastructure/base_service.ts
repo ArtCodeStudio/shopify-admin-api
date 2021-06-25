@@ -41,12 +41,12 @@ class ApiInfo {
    * In case of a 429 (too many requests) error, Shopify may additionally provide a 'retry-after' header, indicating
    * the number of seconds when the request should be retried.
    * This is all taken into account for timing the next API call.
-   * 
+   *
    * @param val string
    * @param timestamp number | null
    * @param retryAfter number | null
    * @returns CallLimits
-   * 
+   *
    * TODO: Certain endpoints have limits that differ from the normal bucket size. For example, order.create is limited
    * to 5 per minute for development stores. These individual limits should be added to the individual API service
    * classes where they apply.
