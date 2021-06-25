@@ -92,7 +92,7 @@ export class OrderTests {
 
             lastCreate = now;
             const order = await this.service.create(createData, undefined, { send_receipt: false, send_fulfillment_receipt: false })
-q
+
             if (scheduleForDeletion) {
                 this.created.push(order);
             };
